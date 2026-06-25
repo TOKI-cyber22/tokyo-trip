@@ -70,6 +70,7 @@
             font-weight: 500;
             cursor: pointer;
             box-shadow: 0 2px 5px rgba(0,0,0,0.01);
+            border-style: solid;
         }
         .tab-btn.active {
             background-color: var(--text-dark);
@@ -141,8 +142,9 @@
         .tag-capsule { font-size: 0.75rem; padding: 2px 8px; border-radius: 20px; background-color: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; }
 
         .map-btn {
-            position: absolute; right: 14px; top: 16px; background-color: #f1f3f5; border: none;
+            position: absolute; right: 14px; top: 16px; background-color: #f1f3f5;
             width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            text-decoration: none;
         }
         .map-btn i { font-size: 1.25rem; color: var(--text-dark); }
 
@@ -157,23 +159,21 @@
     <div class="tabs-container" id="tabs-bar"></div>
     <div id="main-panel"></div>
 
+    <!-- 腳本放置於底部，確保DOM元素完全載入後立即執行 -->
     <script>
-        // 確保網頁元件都準備好才啟動，防止白框
-        document.addEventListener("DOMContentLoaded", function() {
-            try {
-                var AETA_STORES = {
-                    "SUPER A MARKET 青山店": "SUPER A MARKET Aoyama Tokyo",
-                    "SUPER A MARKET NEWoMan店": "SUPER A MARKET NEWoMan Shinjuku Tokyo",
-                    "Cibone 青山/表參道店": "Cibone Aoyama Tokyo",
-                    "Cibone CASE（Ginza Six 4F）": "Cibone Case Ginza Six Tokyo",
-                    "ISETAN ReStyle（伊勢丹新宿本館3F）": "Isetan Shinjuku ReStyle",
-                    "ISETAN MEN'S Creators（メンズ館）": "Isetan Men's Tokyo",
-                    "STEVEN ALAN（Lumine2店）": "Steven Alan Lumine2 Shinjuku",
-                    "STUDIOUS（澀谷PARCO店）": "Studious Shibuya Parco"
-                };[cite: 1]
+        var AETA_STORES = {
+            "SUPER A MARKET 青山店": "SUPER A MARKET Aoyama Tokyo",
+            "SUPER A MARKET NEWoMan店": "SUPER A MARKET NEWoMan Shinjuku Tokyo",
+            "Cibone 青山/表參道店": "Cibone Aoyama Tokyo",
+            "Cibone CASE（Ginza Six 4F）": "Cibone Case Ginza Six Tokyo",
+            "ISETAN ReStyle（伊勢丹新宿本館3F）": "Isetan Shinjuku ReStyle",
+            "ISETAN MEN'S Creators（メンズ館）": "Isetan Men's Tokyo",
+            "STEVEN ALAN（Lumine2店）": "Steven Alan Lumine2 Shinjuku",
+            "STUDIOUS（澀谷PARCO店）": "Studious Shibuya Parco"
+        };[cite: 1]
 
-                var TL = {eat:"正餐", sweet:"甜點", shop:"購物", spot:"景點", event:"祭典"};[cite: 1]
-                var daysData = [
+        var TL = {eat:"正餐", sweet:"甜點", shop:"購物", spot:"景點", event:"祭典"};[cite: 1]
+        var daysData = [
 {tab:"7/21 二",title:"7/21（週二）",sub:"凌晨4點羽田落地 → 押上放行李 → 淺草・月島・人形町・銀座・有樂町",
 secs:[
 {l:"早上",items:[
@@ -217,7 +217,7 @@ secs:[
 {tab:"7/23 四",title:"7/23（週四）",sub:"表參道・青山・原宿 → 神田 → 神樂坂ほおずき市",
 secs:[
 {l:"上午",items:[
-{t:"10:00",n:"根津美術館",type:"spot",a:"南青山／表參道站",h:"週四✅10:00–17:00",tr:"約20分",w:"週一休",q:"Nezu Museum Tokyo",aeta:["SUPER A MARKET 青山店","Cibone 青山/表參道店"]}
+{t:"10:00",n:"根津美術館",type:"spot",a:"南青山／表參道站",h:"週四✅10:00–17:00",tr:"約20分",w:"週一休",q:"Nezu Museum Museum Tokyo",aeta:["SUPER A MARKET 青山店","Cibone 青山/表參道店"]}
 ]},
 {l:"下午",items:[
 {t:"12:00",n:"A Happy Pancake（午餐）",type:"eat",a:"表參道站",h:"10:00–19:00",tr:"步行10分",w:"約1小時",q:"A Happy Pancake Omotesando Tokyo"},
@@ -252,7 +252,7 @@ res:[{d:"韻松亭：建議提前預約 03-3821-8126"},{d:"14:00–18:00 上野�
 {tab:"7/25 六",title:"7/25（週六）",sub:"新宿Yodobashi → 大塚Fruits Sugi → 六歌仙午餐 → Sunshine City → 赤坂 → 東京鐵塔・麻布十番",
 secs:[
 {l:"早上",items:[
-{t:"09:30",n:"Yodobashi Camera新宿西口",type:"shop",a:"新宿西西口站",h:"09:30–22:00",tr:"約15分",w:"GR3抽選販售制，建議事先確認庫存",q:"Yodobashi Camera Shinjuku Nishiguchi Tokyo",tags:["Montbell拖鞋"],
+{t:"09:30",n:"Yodobashi Camera新宿西口",type:"shop",a:"新宿西口站",h:"09:30–22:00",tr:"約15分",w:"GR3抽選販售制，建議事先確認庫存",q:"Yodobashi Camera Shinjuku Nishiguchi Tokyo",tags:["Montbell拖鞋"],
 deals:[{b:"理光GR3/Montbell拖鞋",d:"消費滿5,000日圓（未稅）即享10%免稅，搭配Visa信用卡可再折5%，最高約14.5%優惠，是電器店中最穩定的折扣組合。"}]},
 {t:"11:00",n:"Fruits Sugi",type:"sweet",a:"大塚站",h:"週六11:00–19:00",tr:"約8分；步行5分",w:"18:00前入",q:"Fruits Sugi Kita-Otsuka Tokyo"},
 {t:"11:45",n:"六歌仙本店（午餐）",type:"eat",a:"西新宿站",h:"11:00–23:00",tr:"約8分；步行5分",w:"已訂11:45",q:"Rokkasen Honten Shinjuku Tokyo"}
@@ -297,134 +297,128 @@ secs:[
 {t:"18:30",n:"結Yuwaeru本店（晚餐）",type:"eat",a:"藏前站",h:"週一夜17:30–21:00",tr:"約3分",q:"Yuwaeru Kura-mae Tokyo"}
 ]}
 ],
-res:[{d:"玉ひで：提前電話預約 03-3668-7651（午餐場11:30）"},{d:"天ぷら中山：現場11:15前排隊，現金only"}]}
+res:[{d:"玉ひ為：提前電話預約 03-3668-7651（午餐場11:30）"},{d:"天ぷら中山：現場11:15前排隊，現金only"}]}
 ];[cite: 1]
 
-                function mapsUrl(q) {
-                    return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
-                }[cite: 1]
+        function mapsUrl(q) {
+            return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+        }[cite: 1]
 
-                var tabsBar = document.getElementById('tabs-bar');
-                var mainPanel = document.getElementById('main-panel');
-                var activeIndex = 0;
+        var tabsBar = document.getElementById('tabs-bar');
+        var mainPanel = document.getElementById('main-panel');
+        var activeIndex = 0;
 
-                function renderTabs() {
-                    tabsBar.innerHTML = '';
-                    daysData.forEach(function(day, index) {
-                        var btn = document.createElement('button');
-                        btn.className = 'tab-btn' + (index === activeIndex ? ' active' : '');
-                        btn.innerText = day.tab;
-                        btn.onclick = function() {
-                            activeIndex = index;
-                            renderTabs();
-                            renderDay(activeIndex);
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                        };
-                        tabsBar.appendChild(btn);
-                    });
-                }
+        function renderTabs() {
+            tabsBar.innerHTML = '';
+            daysData.forEach(function(day, index) {
+                var btn = document.createElement('button');
+                btn.className = 'tab-btn' + (index === activeIndex ? ' active' : '');
+                btn.innerText = day.tab;
+                btn.onclick = function() {
+                    activeIndex = index;
+                    renderTabs();
+                    renderDay(activeIndex);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                };
+                tabsBar.appendChild(btn);
+            });
+        }
 
-                function renderDay(index) {
-                    var day = daysData[index];
-                    var html = '';
+        function renderDay(index) {
+            var day = daysData[index];
+            var html = '';
 
-                    // 頂部導覽大框
-                    html += '<div class="day-header-box">';
-                    html += '  <div class="day-title">' + day.title + '</div>';
-                    html += '  <div class="day-sub">' + day.sub + '</div>';
-                    html += '</div>';[cite: 1]
+            // 頂部導覽大框
+            html += '<div class="day-header-box">';
+            html += '  <div class="day-title">' + day.title + '</div>';
+            html += '  <div class="day-sub">' + day.sub + '</div>';
+            html += '</div>';[cite: 1]
 
-                    // 時段區塊
-                    day.secs.forEach(function(sec) {
-                        html += '<div class="section-label"><i class="ti ti-compass"></i> ' + sec.l + '</div>';[cite: 1]
-                        
-                        sec.items.forEach(function(item) {
-                            var label = TL[item.type] || '行程';[cite: 1]
-                            
-                            html += '<div class="timeline-card">';
-                            html += '  <div class="card-left">';
-                            html += '    <div class="time-text">' + (item.t || '--:--') + '</div>';
-                            html += '    <div class="type-badge" style="background-color: var(--bg-' + item.type + '); color: var(--text-' + item.type + ');">' + label + '</div>';
-                            html += '  </div>';
-                            
-                            html += '  <div class="card-right">';
-                            html += '    <div class="item-title">' + item.n + '</div>';
-                            html += '    <div class="item-meta"><i class="ti ti-map-pin"></i> ' + item.a + '</div>';
-                            
-                            if (item.h) { html += '    <div class="item-meta"><i class="ti ti-clock"></i> ' + item.h + '</div>'; }
-                            if (item.tr) { html += '    <div class="item-meta"><i class="ti ti-train"></i> ' + item.tr + '</div>'; }
-                            
-                            // 標籤群
-                            if (item.tags && item.tags.length > 0) {
-                                html += '    <div class="tags-row">';
-                                item.tags.forEach(function(tag) {
-                                    html += '      <span class="tag-capsule">' + tag + '</span>';
-                                });
-                                html += '    </div>';
-                            }
-                            
-                            // Aeta 專櫃聯動
-                            if (item.aeta && item.aeta.length > 0) {
-                                html += '    <div class="item-note box-aeta">';
-                                html += '      <div style="font-weight: 700; margin-bottom: 4px; font-size: 0.8rem;"><i class="ti ti-shopping-bag"></i> 附近 Aeta 販賣點</div>';
-                                item.aeta.forEach(function(name) {
-                                    var searchQ = AETA_STORES[name] || name;
-                                    html += '      <div style="margin: 2px 0;">• <a href="' + mapsUrl(searchQ) + '" target="_blank">' + name + ' <i class="ti ti-external-link" style="font-size:0.7rem;"></i></a></div>';
-                                });
-                                html += '    </div>';
-                            }
-                            
-                            // 優惠心法
-                            if (item.deals && item.deals.length > 0) {
-                                html += '    <div class="item-note box-deal">';
-                                item.deals.forEach(function(d) {
-                                    html += '      <div><i class="ti ti-coin"></i> <b>' + d.b + '</b>：' + d.d + '</div>';
-                                });
-                                html += '    </div>';
-                            }
-                            
-                            // 警示框
-                            if (item.w) {
-                                html += '    <div class="item-note box-warning"><i class="ti ti-alert-triangle"></i> ' + item.w + '</div>';
-                            }
-                            
-                            html += '  </div>'; // card-right 結束
-                            
-                            // 地圖按鈕
-                            if (item.q) {
-                                html += '  <button class="map-btn" onclick="window.open(\'' + mapsUrl(item.q) + '\', \'_blank\')">';
-                                html += '    <i class="ti ti-map-2"></i>';
-                                html += '  </button>';
-                            }
-                            
-                            html += '</div>'; // timeline-card 結束
-                        });
-                    });
-
-                    // 當日備註提醒
-                    if (day.res && day.res.length > 0) {
-                        html += '  <div class="day-res-box">';
-                        html += '    <div class="day-res-title"><i class="ti ti-bell-ringing"></i> 當日行前必看提醒</div>';
-                        day.res.forEach(function(r) {
-                            html += '    <div class="day-res-item">• ' + r.d + '</div>';
-                        });
-                        html += '  </div>';[cite: 1]
-                    } else {
-                        html += '<div style="height: 30px;"></div>';
-                    }
-
-                    mainPanel.innerHTML = html;
-                }
-
-                // 執行初始化
-                renderTabs();
-                renderDay(activeIndex);
+            // 時段區塊
+            day.secs.forEach(function(sec) {
+                html += '<div class="section-label"><i class="ti ti-compass"></i> ' + sec.l + '</div>';[cite: 1]
                 
-            } catch (err) {
-                // 如果真的出錯，直接噴在螢幕上除錯
-                document.body.innerHTML += '<div style="color:red; padding:20px; background:#fff;">錯誤回報: ' + err.message + '</div>';
+                sec.items.forEach(function(item) {
+                    var label = TL[item.type] || '行程';[cite: 1]
+                    
+                    html += '<div class="timeline-card">';
+                    html += '  <div class="card-left">';
+                    html += '    <div class="time-text">' + (item.t || '--:--') + '</div>';
+                    html += '    <div class="type-badge" style="background-color: var(--bg-' + item.type + '); color: var(--text-' + item.type + ');">' + label + '</div>';
+                    html += '  </div>';
+                    
+                    html += '  <div class="card-right">';
+                    html += '    <div class="item-title">' + item.n + '</div>';
+                    html += '    <div class="item-meta"><i class="ti ti-map-pin"></i> ' + item.a + '</div>';
+                    
+                    if (item.h) { html += '    <div class="item-meta"><i class="ti ti-clock"></i> ' + item.h + '</div>'; }
+                    if (item.tr) { html += '    <div class="item-meta"><i class="ti ti-train"></i> ' + item.tr + '</div>'; }
+                    
+                    // 標籤群
+                    if (item.tags && item.tags.length > 0) {
+                        html += '    <div class="tags-row">';
+                        item.tags.forEach(function(tag) {
+                            html += '      <span class="tag-capsule">' + tag + '</span>';
+                        });
+                        html += '    </div>';
+                    }
+                    
+                    // Aeta 專櫃聯動
+                    if (item.aeta && item.aeta.length > 0) {
+                        html += '    <div class="item-note box-aeta">';
+                        html += '      <div style="font-weight: 700; margin-bottom: 4px; font-size: 0.8rem;"><i class="ti ti-shopping-bag"></i> 附近 Aeta 販賣點</div>';
+                        item.aeta.forEach(function(name) {
+                            var searchQ = AETA_STORES[name] || name;
+                            html += '      <div style="margin: 2px 0;">• <a href="' + mapsUrl(searchQ) + '" target="_blank">' + name + ' <i class="ti ti-external-link" style="font-size:0.7rem;"></i></a></div>';
+                        });
+                        html += '    </div>';
+                    }
+                    
+                    // 優惠心法
+                    if (item.deals && item.deals.length > 0) {
+                        html += '    <div class="item-note box-deal">';
+                        item.deals.forEach(function(d) {
+                            html += '      <div><i class="ti ti-coin"></i> <b>' + d.b + '</b>：' + d.d + '</div>';
+                        });
+                        html += '    </div>';
+                    }
+                    
+                    // 警示框
+                    if (item.w) {
+                        html += '    <div class="item-note box-warning"><i class="ti ti-alert-triangle"></i> ' + item.w + '</div>';
+                    }
+                    
+                    html += '  </div>'; // card-right 結束
+                    
+                    // 地圖純連結按鈕 (無任何 onclick 屬性，防噴錯)
+                    if (item.q) {
+                        html += '  <a class="map-btn" href="' + mapsUrl(item.q) + '" target="_blank">';
+                        html += '    <i class="ti ti-map-2"></i>';
+                        html += '  </a>';
+                    }
+                    
+                    html += '</div>'; // timeline-card 結束
+                });
+            });
+
+            // 當日備註提醒
+            if (day.res && day.res.length > 0) {
+                html += '  <div class="day-res-box">';
+                html += '    <div class="day-res-title"><i class="ti ti-bell-ringing"></i> 當日行前必看提醒</div>';
+                day.res.forEach(function(r) {
+                    html += '    <div class="day-res-item">• ' + r.d + '</div>';
+                });
+                html += '  </div>';[cite: 1]
+            } else {
+                html += '<div style="height: 30px;"></div>';
             }
-        });
+
+            mainPanel.innerHTML = html;
+        }
+
+        // 直接在底部執行，不等待任何加載事件
+        renderTabs();
+        renderDay(activeIndex);
     </script>
 </body>
 </html>
