@@ -2,178 +2,572 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <!-- 這是讓手機版畫面恢復正常、字體變大讀取的關鍵神奇密碼！ -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>東京自主遊行程</title>
+    <title>東京自主遊隨身手冊 🗼</title>
     
-    <!-- 引入最新版高質感 Tabler Icons 圖示 -->
+    <!-- 引入高質感 Tabler Icons 圖示庫 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     
     <style>
-        /* 日系極簡清新風格 UI 設計 */
         :root {
-            --bg-color: #f9f9fb;
+            --bg-main: #f6f8fa;
             --card-bg: #ffffff;
-            --text-main: #2d3142;
-            --text-muted: #9095a7;
-            --primary-color: #e5989b; /* 溫柔的文青霧粉色 */
-            --border-radius: 14px;
+            --text-dark: #1a1d20;
+            --text-muted: #6a737d;
+            --primary: #d4a373; /* 溫柔日系木質調 */
+            --border-radius: 16px;
+            
+            /* 分類標籤色彩 */
+            --bg-eat: #ffe3e3; --text-eat: #e05353;
+            --bg-sweet: #fff3cd; --text-sweet: #b58105;
+            --bg-shop: #e0f2fe; --text-shop: #0369a1;
+            --bg-spot: #f3f4f6; --text-spot: #4b5563;
+            --bg-event: #f3e8ff; --text-event: #7e22ce;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            background-color: var(--bg-main);
+            color: var(--text-dark);
             margin: 0;
-            padding: 20px 16px;
+            padding: 0;
             -webkit-font-smoothing: antialiased;
         }
 
-        h2 {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: var(--text-main);
+        /* 固定頂部導覽 */
+        .app-header {
+            background-color: var(--card-bg);
+            padding: 16px;
             text-align: center;
+            font-size: 1.15rem;
+            font-weight: 700;
             letter-spacing: 1px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #eee;
         }
 
-        /* 頁籤在手機上改成可左右橫向滑動的舒適滾動條 */
-        #tabs {
+        /* 頂部日期滑動列 */
+        .tabs-container {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             overflow-x: auto;
-            padding-bottom: 12px;
-            margin-bottom: 16px;
-            scrollbar-width: none; /* 隱藏電腦版滾動條 */
+            padding: 14px 16px;
+            background-color: var(--bg-main);
+            position: sticky;
+            top: 55px;
+            z-index: 99;
+            scrollbar-width: none;
         }
-        #tabs::-webkit-scrollbar {
-            display: none; /* 隱藏手機版滾動條 */
-        }
+        .tabs-container::-webkit-scrollbar { display: none; }
 
         .tab-btn {
             flex: 0 0 auto;
             padding: 10px 18px;
             background-color: var(--card-bg);
-            border: 1px solid #eef0f5;
+            border: 1px solid #e1e4e8;
             border-radius: 24px;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             color: var(--text-muted);
+            font-weight: 500;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.01);
             transition: all 0.2s ease;
         }
-
         .tab-btn.active {
-            background-color: var(--primary-color);
+            background-color: var(--text-dark);
             color: white;
-            border-color: var(--primary-color);
-            font-weight: bold;
+            border-color: var(--text-dark);
+            font-weight: 600;
         }
 
-        /* 行程方塊改成大間距、好觸控的手機卡片 */
-        .store-card {
-            background-color: var(--card-bg);
+        /* 當日概要框 */
+        .day-header-box {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f6edd9 100%);
+            margin: 0 16px 16px 16px;
+            padding: 16px;
             border-radius: var(--border-radius);
-            padding: 18px;
-            margin-bottom: 14px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid #f1f3f7;
+            color: #7f5539;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 8px rgba(212,163,115,0.05);
+        }
+        .day-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #5c3d2e;
+        }
+        .day-sub {
+            font-size: 0.88rem;
+            line-height: 1.5;
         }
 
-        .store-info {
+        /* 時段小標題 (早上/下午) */
+        .section-label {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #949aab;
+            letter-spacing: 1px;
+            margin: 24px 16px 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .section-label::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background-color: #e5e7eb;
+        }
+
+        /* 行程卡片清單 */
+        .timeline-container {
+            padding: 0 16px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            padding-right: 12px;
+            gap: 14px;
         }
 
-        .store-name {
+        .timeline-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.02);
+            display: flex;
+            align-items: flex-start;
+            position: relative;
+            border: 1px solid #f0f2f5;
+        }
+
+        /* 時間與種類標籤 */
+        .card-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 58px;
+            flex-shrink: 0;
+            margin-right: 12px;
+            border-right: 1px dashed #e5e7eb;
+            padding-right: 8px;
+        }
+        .time-text {
             font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            min-height: 20px;
+        }
+        .type-badge {
+            font-size: 0.72rem;
+            padding: 3px 7px;
+            border-radius: 6px;
+            margin-top: 6px;
             font-weight: 600;
-            color: var(--text-main);
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* 卡片右側主內容 */
+        .card-right {
+            flex-grow: 1;
+            padding-right: 42px; /* 給導航按鈕留位子 */
+        }
+        .item-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 6px;
             line-height: 1.4;
         }
-
-        .store-jp-name {
+        
+        /* 基礎中繼資料樣式 */
+        .item-meta {
             font-size: 0.85rem;
             color: var(--text-muted);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .item-meta a {
+            color: #0284c7;
+            text-decoration: none;
+            font-weight: 500;
         }
 
-        /* 導航按鈕放大，符合手指點擊的最低高度規範 */
+        /* 備註與小貼士框 */
+        .item-note {
+            font-size: 0.85rem;
+            background-color: #f8f9fa;
+            padding: 10px 12px;
+            border-radius: 10px;
+            margin-top: 8px;
+            color: #4b5563;
+            line-height: 1.5;
+        }
+
+        /* 特殊區塊：警告提醒 */
+        .box-warning {
+            background-color: #fff5f5;
+            border: 1px solid #fee2e2;
+            color: #bc1c1c;
+        }
+        /* 特殊區塊：精品/Aeta 資訊 */
+        .box-aeta {
+            background-color: #faf5ff;
+            border: 1px solid #f3e8ff;
+            color: #6b21a8;
+        }
+        .box-aeta a {
+            color: #7e22ce;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            font-weight: 600;
+        }
+        /* 特殊區塊：購物省錢心法 */
+        .box-deal {
+            background-color: #fffaf0;
+            border: 1px solid #ffedd5;
+            color: #c2410c;
+        }
+
+        /* 常設標籤 (Tags) Capsules */
+        .tags-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 8px;
+        }
+        .tag-capsule {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background-color: #f3f4f6;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* 一鍵導航圓鈕 */
         .map-btn {
-            background-color: #f1f3f7;
-            color: var(--text-main);
+            position: absolute;
+            right: 14px;
+            top: 16px;
+            background-color: #f1f3f5;
             border: none;
-            width: 46px;
-            height: 46px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
             transition: all 0.2s;
         }
+        .map-btn i { font-size: 1.25rem; color: var(--text-dark); }
+        .map-btn:active { background-color: #e2e5ec; transform: scale(0.92); }
 
-        .map-btn:active {
-            background-color: #e2e5ec;
-            transform: scale(0.95);
+        /* 本日總結提醒 (Reservation / Cash) */
+        .day-res-box {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: var(--border-radius);
+            margin: 20px 16px 40px 16px;
+            padding: 16px;
+        }
+        .day-res-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #166534;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .day-res-item {
+            font-size: 0.85rem;
+            color: #1e293b;
+            line-height: 1.5;
+            margin-bottom: 4px;
         }
     </style>
 </head>
 <body>
 
-    <h2>東京隨身行程表 🇯🇵</h2>
+    <div class="app-header">東京自主遊隨身手冊 🗼</div>
 
-    <!-- 區分區域或日期的頁籤區 -->
-    <div id="tabs">
-        <button class="tab-btn active">全部景點</button>
-        <button class="tab-btn">表參道/青山</button>
-        <button class="tab-btn">神田/美食</button>
-    </div>
+    <!-- 橫向滑動天數頁籤 -->
+    <div class="tabs-container" id="tabs-bar"></div>
 
-    <!-- 行程卡片清單區 -->
-    <div id="panels">
-        <!-- 這裡會由下方的 JS 自動動態產生美麗卡片 -->
-    </div>
+    <!-- 主區塊：會經由 JS 切換渲染 -->
+    <div id="main-panel"></div>
 
     <script>
-        // Google Maps 導航連結產生器
-        function mapsUrl(q){
-            return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
-        }
-
-        // 這裡替換成你原本完整的店家清單資料（先拿你截圖中的範例填入）
+        // 1. Aeta 專門店對照字典[cite: 1]
         var AETA_STORES = {
             "SUPER A MARKET 青山店": "SUPER A MARKET Aoyama Tokyo",
             "SUPER A MARKET NEWoMan店": "SUPER A MARKET NEWoMan Shinjuku Tokyo",
             "Cibone 青山/表參道店": "Cibone Aoyama Tokyo",
-            "Cibone CASE ( Ginza Six 4F )": "Cibone Case Ginza Six Tokyo"
-            // 💡 提示：你原本的所有店家資料可以直接整串複製貼到這裡
-        };
+            "Cibone CASE（Ginza Six 4F）": "Cibone Case Ginza Six Tokyo",
+            "ISETAN ReStyle（伊勢丹新宿本館3F）": "Isetan Shinjuku ReStyle",
+            "ISETAN MEN'S Creators（メンズ館）": "Isetan Men's Tokyo",
+            "STEVEN ALAN（Lumine2店）": "Steven Alan Lumine2 Shinjuku",
+            "STUDIOUS（澀谷PARCO店）": "Studious Shibuya Parco"
+        };[cite: 1]
 
-        // 自動動態產生高顏值手機版卡片
-        const panelsContainer = document.getElementById('panels');
-        
-        Object.keys(AETA_STORES).forEach(key => {
-            const card = document.createElement('div');
-            card.className = 'store-card';
-            
-            card.innerHTML = `
-                <div class="store-info">
-                    <div class="store-name">${key}</div>
-                    <div class="store-jp-name">${AETA_STORES[key]}</div>
+        // 2. 核心大數據：完美移植妳規劃的整整 7 天規格[cite: 1]
+        var TL = {eat:"正餐", sweet:"甜點", shop:"購物", spot:"景點", event:"祭典"};[cite: 1]
+        var daysData = [
+{tab:"7/21 二",title:"7/21（週二）",sub:"凌晨4點羽田落地 → 押上放行李 → 淺草・月島・人形町・銀座・有樂町",
+secs:[
+{l:"早上",items:[
+{t:"08:00",n:"MISOJYU（早餐）",type:"eat",a:"淺草／淺草站",h:"08:00–15:30",tr:"押上步行15分",q:"Misojyu Asakusa Tokyo"},
+{t:"09:00",n:"晴空塔 Solamachi 逛街",type:"shop",a:"押上／押上站",h:"10:00–21:00",tr:"從MISOJYU步行10分",q:"Tokyo Solamachi Oshiage",tags:["Citen（Solamachi店）"]},
+{t:"11:30",n:"宿六（午間場）",type:"eat",a:"淺草／淺草站",h:"午11:30–14:00",tr:"從晴空塔步行10分",w:"13:00前入座，週二僅午間場",q:"Onigiri Asakusa Yadoroku"}
+]},
+{l:"下午",items:[
+{t:"13:30",n:"tsumugi 月島",type:"eat",a:"月島／月島站",h:"10:00–20:00",tr:"都営浅草線約10分",q:"Tsumugi Tsukishima Tokyo"},
+{t:"15:00",n:"重盛的人形燒",type:"sweet",a:"人形町／人形町站",h:"09:00–19:00",tr:"約15分",q:"Shigemori Ningyoyaki Ningyocho Tokyo"},
+{t:"15:20",n:"茶寮 森乃園（外帶）",type:"sweet",a:"人形町／人形町站",h:"10:00–19:00",tr:"步行3分",w:"外帶霜淇淋",q:"Morinoen Ningyocho Tokyo"},
+{t:"15:40",n:"鯛魚燒 柳屋",type:"sweet",a:"人形町／人形町站",h:"12:30–18:00",tr:"步行3分",w:"17:00前入",q:"Yanagiya Taiyaki Ningyocho Tokyo"},
+{t:"16:30",n:"BUTTER Biei",type:"sweet",a:"丸之內／東京站",h:"11:00–20:00",tr:"約15分",q:"BUTTER Biei Pasture Marunouchi Tokyo"}
+]},
+{l:"傍晚",items:[
+{t:"17:30",n:"Kanmi Okame",type:"sweet",a:"有樂町站",h:"11:00–18:30",tr:"約8分",w:"17:30入座，18:00前點餐，週日休",q:"Kanmi Okame Tokyo Kotsu Kaikan"},
+{t:"18:30",n:"Ginza Six 逛街",type:"shop",a:"銀座站",h:"10:30–20:30",tr:"步行8分",w:"約2小時，20:30後銀座自選晚餐",q:"Ginza Six Tokyo",tags:["AVEDA(沙龍商品)","黛珂DECORTÉ"],aeta:["Cibone CASE（Ginza Six 4F）"],
+deals:[{b:"AVEDA",d:"B1F「PEEK-A-BOO AVEDA」是沙龍型態，買洗護產品多需搭配剪髮/染髮服務體驗，免稅在1F櫃台統一辦理。若只想單買產品不剪髮，新宿伊勢丹的AVEDA專門店更適合純零售。"}]}
+]}
+]},
+{tab:"7/22 三",title:"7/22（週三）",sub:"ONE@TOKYO checkout → 濱松町寄放行李 → 橫濱麵包超人 → 澀谷整天",
+secs:[
+{l:"早上",items:[
+{t:"07:00",n:"checkout→Section L寄行李",type:"spot",a:"濱松町站",tr:"約15分",q:"Selection L Hamamatsucho Tokyo"},
+{t:"08:00",n:"出發橫濱",type:"spot",a:"—",tr:"約60分"},
+{t:"09:30",n:"Eggs'n Things橫濱（早午餐）",type:"eat",a:"元町中華街站",h:"09:00–22:00",tr:"約15分",w:"約1小時，10:30前離開",q:"Eggs n Things Yokohama Marine Tower"}
+]},
+{l:"上午",items:[
+{t:"10:30",n:"橫濱麵包超人博物館",type:"spot",a:"みなとみらい站",h:"週三✅10:00–18:00",tr:"約10分；步行8分",w:"約2.5小時",q:"Yokohama Anpanman Children Museum",tags:["Keroro周邊（館內扭蛋機）"]}
+]},
+{l:"下午・晚上",items:[
+{t:"13:30",n:"→濱松町正式check-in",type:"spot",a:"濱松町",tr:"約55分"},
+{t:"17:00",n:"Uohide夜間場晚餐",type:"eat",a:"澀谷站",h:"夜17:00–22:30",tr:"約10分；步行8分",w:"17:00開門即入",q:"Uohide Shibuya Sakuragaoka Tokyo"},
+{t:"18:30",n:"澀谷109逛街",type:"shop",a:"澀谷站",h:"10:00–21:00",tr:"步行5分",q:"Shibuya 109 Tokyo",tags:["3coins(B2F)","earth","coen"]},
+{t:"",n:"澀谷PARCO逛街",type:"shop",a:"澀谷站",h:"11:00–21:00",tr:"步行5分",q:"Shibuya Parco Tokyo",aeta:["STUDIOUS（澀谷PARCO店）"]},
+{t:"",n:"Mandarake Shibuya",type:"shop",a:"PARCO B2F",h:"12:00–20:00",tr:"PARCO內",w:"19:30前出",q:"Mandarake Shibuya Tokyo",tags:["Keroro二手"]},
+{t:"",n:"VILLAGE VANGUARD",type:"shop",a:"澀谷站",h:"11:00–21:00",tr:"步行即達",q:"Village Vanguard Shibuya Tokyo",tags:["Keroro雜貨"]},
+{t:"21:30",n:"ろばた代々木八幡（宵夜）",type:"eat",a:"代々木八幡站",h:"17:00–23:00",tr:"小田急線約5分",q:"産直市場 ろばた 渋谷代々木八幡店"}
+]}
+]},
+{tab:"7/23 四",title:"7/23（週四）",sub:"表參道・青山・原宿 → 神田 → 神樂坂ほおずき市",
+secs:[
+{l:"上午",items:[
+{t:"10:00",n:"根津美術館",type:"spot",a:"南青山／表參道站",h:"週四✅10:00–17:00",tr:"約20分",w:"週一休",q:"Nezu Museum Tokyo",aeta:["SUPER A MARKET 青山店","Cibone 青山/表參道店"]}
+]},
+{l:"下午",items:[
+{t:"12:00",n:"A Happy Pancake（午餐）",type:"eat",a:"表參道站",h:"10:00–19:00",tr:"步行10分",w:"約1小時",q:"A Happy Pancake Omotesando Tokyo"},
+{t:"13:30",n:"THE BELCOMO（下午茶）",type:"sweet",a:"北青山／表參道站",h:"08:00–23:00",tr:"步行8分",w:"約1小時",q:"THE BELCOMO Aoyama Tokyo"},
+{t:"14:30",n:"Kiddy Land原宿",type:"shop",a:"原宿站",h:"11:00–20:00",tr:"步行5分",w:"約1小時",q:"Kiddy Land Omotesando Tokyo",tags:["Keroro玩具/扭蛋"]},
+{t:"15:30",n:"@cosme TOKYO",type:"shop",a:"表參道站",h:"11:00–21:00",tr:"步行5分",w:"約1小時",q:"cosme store Omotesando Tokyo",tags:["Rosy Rosa","黛珂DECORTÉ"],
+deals:[{b:"NAPLA N.髮油",d:"沙龍專業品牌，@cosme是少數能單買零售的管道，且有免稅櫃台，可試聞香氣再決定。"}]},
+{t:"16:15",n:"神田松屋（早晚餐）",type:"eat",a:"神田站",h:"週四11:00–20:30",tr:"約15分",w:"19:30前入座",q:"Kanda Matsuya Tokyo"},
+{t:"17:00",n:"Chacott 表參道旗艦店",type:"shop",a:"表參道站",h:"約11:00–20:00",tr:"步行8分",w:"約30分",q:"Chacott Omotesando Tokyo",
+deals:[{b:"Chacott",d:"【全東京品項最齊全、最推在此買！】一整棟專賣店，貨量與體驗最棒，定價直接辦理10%免稅。"}]}
+]},
+{l:"晚上",items:[
+{t:"18:00",n:"前往神樂坂",type:"spot",a:"—",tr:"約10分"},
+{t:"18:30",n:"神樂坂ほおずき市",type:"event",a:"飯田橋站",h:"17:00–21:00",tr:"毘沙門天善國寺周邊",w:"酸漿燈籠・屋台美食",q:"神楽坂 毘沙門天 善國寺 Tokyo"}
+]}
+]},
+{tab:"7/24 五",title:"7/24（週五）",sub:"谷中・上野 → 神樂坂阿波踊",
+secs:[
+{l:"午間",items:[
+{t:"12:00",n:"TAYORI（午餐）",type:"eat",a:"千駄木站",h:"週五12:00–17:00",tr:"約30分",w:"16:00前入座",q:"TAYORI Yanaka Tokyo"},
+{t:"13:30",n:"羽二重団子（外帶）",type:"sweet",a:"日暮里站",h:"11:00–18:00",tr:"步行10分",q:"羽二重団子 日暮里 Tokyo"}
+]},
+{l:"下午",items:[
+{t:"14:00",n:"韻松亭（輕食小量）",type:"eat",a:"上野站",h:"午11:00–15:00",tr:"約5分；步行10分",w:"14:00前入座，建議預約",q:"Inshotei Ueno Tokyo"}
+]},
+{l:"晚上",items:[
+{t:"18:00",n:"前往神樂坂",type:"spot",a:"—",tr:"約20分"},
+{t:"19:00",n:"神樂坂阿波踊",type:"event",a:"飯田橋站",h:"19:00–21:00",tr:"神樂坂通",q:"神楽坂まつり 阿波踊り Tokyo"}
+]}
+],
+res:[{d:"韻松亭：建議提前預約 03-3821-8126"},{d:"14:00–18:00 上野周邊可自由逛或補充輕食再去神樂坂"}]},
+{tab:"7/25 六",title:"7/25（週六）",sub:"新宿Yodobashi → 大塚Fruits Sugi → 六歌仙午餐 → Sunshine City → 赤坂 → 東京鐵塔・麻布十番",
+secs:[
+{l:"早上",items:[
+{t:"09:30",n:"Yodobashi Camera新宿西口",type:"shop",a:"新宿西口站",h:"09:30–22:00",tr:"約15分",w:"GR3抽選販售制，建議事先確認庫存",q:"Yodobashi Camera Shinjuku Nishiguchi Tokyo",tags:["Montbell拖鞋"],
+deals:[{b:"理光GR3/Montbell拖鞋",d:"消費滿5,000日圓（未稅）即享10%免稅，搭配Visa信用卡可再折5%，最高約14.5%優惠，是電器店中最穩定的折扣組合。"}]},
+{t:"11:00",n:"Fruits Sugi",type:"sweet",a:"大塚站",h:"週六11:00–19:00",tr:"約8分；步行5分",w:"18:00前入",q:"Fruits Sugi Kita-Otsuka Tokyo"},
+{t:"11:45",n:"六歌仙本店（午餐）",type:"eat",a:"西新宿站",h:"11:00–23:00",tr:"約8分；步行5分",w:"已訂11:45",q:"Rokkasen Honten Shinjuku Tokyo"}
+]},
+{l:"下午",items:[
+{t:"13:30",n:"SUNSHINE CITY逛街",type:"shop",a:"池袋站",h:"10:00–20:00",tr:"約10分",w:"約2小時",q:"Sunshine City Ikebukuro Tokyo",tags:["Keroro(Bandai Namco)","3coins"]},
+{t:"15:30",n:"Fru-Full赤坂",type:"sweet",a:"赤坂見附站",h:"週六10:00–18:00",tr:"約30分",w:"17:00前入座",q:"Fru-Full Akasaka Tokyo"},
+{t:"17:00",n:"東京鐵塔",type:"spot",a:"赤羽橋站",h:"09:00–23:00",tr:"約20分",q:"Tokyo Tower Japan"},
+{t:"18:30",n:"芝公園",type:"spot",a:"芝公園站",h:"全天",tr:"步行即達",q:"Shiba Park Tokyo"}
+]},
+{l:"晚上",items:[
+{t:"19:00",n:"總本家更科堀井（晚餐）",type:"eat",a:"麻布十番站",h:"夜17:00–20:30",tr:"約4分",w:"19:00入座，19:30最後點餐",q:"Sarashina Horii Azabujuban Tokyo"}
+]}
+]},
+{tab:"7/26 日",title:"7/26（週日）",sub:"日比谷・銀座 → 新宿百貨整天",
+secs:[
+{l:"上午",items:[
+{t:"11:00",n:"Delices Tarte銀座",type:"sweet",a:"銀座站",h:"11:00–21:00",tr:"約15分",w:"約1小時",q:"Delices Tarte Cafe Ginza Tokyo"},
+{t:"12:00",n:"果実園リーベル日比谷",type:"sweet",a:"日比谷站",h:"11:00–20:00",tr:"步行10分",w:"約1小時，19:00前入",q:"Kajitsuen Liebel Hibiya Chante Tokyo"}
+]},
+{l:"下午・晚上",items:[
+{t:"13:00",n:"新宿伊勢丹逛街",type:"shop",a:"新宿三丁目站",h:"10:00–20:00",tr:"約20分",w:"至少2小時，19:00前離開",q:"Isetan Shinjuku Tokyo",tags:["黛珂DECORTÉ","SM2","coen","earth"],aeta:["ISETAN ReStyle（伊勢丹新宿本館3F）","ISETAN MEN'S Creators（メンズ館）"],
+deals:[{b:"AVEDA",d:"伊勢丹新宿是純零售專門店，不需搭配沙龍服務即可單買洗護產品，比Ginza Six的沙龍型態更適合只想買產品的人。"}]},
+{t:"15:30",n:"NEWoMan逛街",type:"shop",a:"新宿站",h:"週日11:00–20:00",tr:"步行5分",w:"至少2小時，19:30前離開",q:"NEWoMan Shinjuku Tokyo",tags:["coen","earth","SM2"],aeta:["SUPER A MARKET NEWoMan店"]},
+{t:"18:00",n:"Lumine 2逛街",type:"shop",a:"新宿站",h:"11:00–21:00",tr:"步行即達",w:"至少1.5小時",q:"Lumine 2 Shinjuku Tokyo",tags:["Citen(4F)","coen","SM2"],aeta:["STEVEN ALAN（Lumine2店）"]},
+{t:"20:00",n:"新宿周邊晚餐自選",type:"eat",a:"新宿"}
+]}
+]},
+{tab:"7/27 一",title:"7/27（週一）",sub:"人形町・日本橋 → 淺草・藏前收尾",
+secs:[
+{l:"上午",items:[
+{t:"11:15",n:"天ぷら中山（午餐）",type:"eat",a:"人形町站",h:"週一✅午11:15–13:00",tr:"約10分",w:"現金only・11:15開門前排隊",q:"Tempura Nakayama Ningyocho Tokyo"},
+{t:"13:00",n:"玉ひで（午餐）",type:"eat",a:"人形町站",h:"週一✅午11:30–13:30",tr:"步行2分",w:"13:00前入座，需提前預約",q:"Tamahide Ningyocho Tokyo"},
+{t:"14:00",n:"船橋屋COREDO室町店",type:"sweet",a:"三越前站",h:"11:00–20:00",tr:"約15分",q:"Funabashiya COREDO Muromachi Tokyo"}
+]},
+{l:"下午",items:[
+{t:"15:00",n:"Fruits Parlor Gotō",type:"sweet",a:"淺草站",h:"週一✅11:00–19:00",tr:"約10分",w:"18:00前入座",q:"Fruits Parlor Goto Asakusa Tokyo"},
+{t:"16:00",n:"Patisserie FOBS",type:"sweet",a:"藏前站",h:"週一✅13:00–18:00",tr:"約3分",w:"17:00前入座",q:"Patisserie FOBS Kototoicho Tokyo"}
+]},
+{l:"傍晚・晚上",items:[
+{t:"17:00",n:"宿六（夜間場）",type:"eat",a:"淺草站",h:"週一夜17:00–20:00",tr:"約3分",w:"17:00開門即到，19:00前入座",q:"Onigiri Asakusa Yadoroku Tokyo"},
+{t:"18:30",n:"結Yuwaeru本店（晚餐）",type:"eat",a:"藏前站",h:"週一夜17:30–21:00",tr:"約3分",q:"Yuwaeru Kura-mae Tokyo"}
+]}
+],
+res:[{d:"玉ひで：提前電話預約 03-3668-7651（午餐場11:30）"},{d:"天ぷら中山：現場11:15前排隊，現金only"}]}
+];[cite: 1]
+
+        function mapsUrl(q) {
+            return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+        }[cite: 1]
+
+        // 3. App 渲染核心邏輯
+        const tabsBar = document.getElementById('tabs-bar');
+        const mainPanel = document.getElementById('main-panel');
+        let activeIndex = 0;
+
+        function initApp() {
+            renderTabs();
+            renderDay(activeIndex);
+        }
+
+        function renderTabs() {
+            tabsBar.innerHTML = '';
+            daysData.forEach((day, index) => {
+                const btn = document.createElement('button');
+                btn.className = `tab-btn ${index === activeIndex ? 'active' : ''}`;
+                btn.innerText = day.tab;
+                btn.onclick = () => {
+                    activeIndex = index;
+                    renderTabs();
+                    renderDay(activeIndex);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                };
+                tabsBar.appendChild(btn);
+            });
+        }
+
+        function renderDay(index) {
+            const day = daysData[index];
+            let html = '';
+
+            // 當日頂部大框
+            html += `
+                <div class="day-header-box">
+                    <div class="day-title">${day.title}</div>
+                    <div class="day-sub">${day.sub}</div>
                 </div>
-                <button class="map-btn" onclick="window.open(mapsUrl('${AETA_STORES[key]}'), '_blank')">
-                    <i class="ti ti-map-pin" style="font-size: 1.3rem; color: #495057;"></i>
-                </button>
-            `;
-            panelsContainer.appendChild(card);
-        });
+            `;[cite: 1]
+
+            // 時間軸時段與行程
+            day.secs.forEach(sec => {
+                html += `<div class="section-label"><i class="ti ti-compass"></i> ${sec.l}</div>`;[cite: 1]
+                
+                sec.items.forEach(item => {
+                    const label = TL[item.type] || '行程';[cite: 1]
+                    
+                    html += `
+                        <div class="timeline-card">
+                            <div class="card-left">
+                                <div class="time-text">${item.t || '--:--'}</div>
+                                <div class="type-badge" style="background-color: var(--bg-${item.type}); color: var(--text-${item.type});">${label}</div>
+                            </div>
+                            <div class="card-right">
+                                <div class="item-title">${item.n}</div>
+                                <div class="item-meta"><i class="ti ti-map-pin"></i> ${item.a}</div>
+                                ${item.h ? `<div class="item-meta"><i class="ti ti-clock"></i> ${item.h}</div>` : ''}
+                                ${item.tr ? `<div class="item-meta"><i class="ti ti-train"></i> ${item.tr}</div>` : ''}
+                                
+                                <!-- 商品標籤群 -->
+                                ${item.tags && item.tags.length > 0 ? `
+                                    <div class="tags-row">
+                                        ${item.tags.map(t => `<span class="tag-capsule">${t}</span>`).join('')}
+                                    </div>
+                                ` : ''}
+
+                                <!-- 附近 Aeta 專櫃 -->
+                                ${item.aeta && item.aeta.length > 0 ? `
+                                    <div class="item-note box-aeta">
+                                        <div style="font-weight: 700; margin-bottom: 4px; font-size: 0.8rem;"><i class="ti ti-shopping-bag"></i> 附近 Aeta 販賣點</div>
+                                        ${item.aeta.map(name => {
+                                            const searchQ = AETA_STORES[name] || name;
+                                            return `<div style="margin: 2px 0;">• <a href="${mapsUrl(searchQ)}" target="_blank">${name} <i class="ti ti-external-link" style="font-size:0.7rem;"></i></a></div>`;
+                                        }).join('')}
+                                    </div>
+                                ` : ''}
+
+                                <!-- 折扣血拼提示框 -->
+                                ${item.deals && item.deals.length > 0 ? `
+                                    <div class="item-note box-deal">
+                                        ${item.deals.map(d => `<div><i class="ti ti-coin"></i> <b>${d.b}</b>：${d.d}</div>`).join('')}
+                                    </div>
+                                ` : ''}
+
+                                <!-- 急迫性注意框 -->
+                                ${item.w ? `
+                                    <div class="item-note box-warning">
+                                        <i class="ti ti-alert-triangle"></i> ${item.w}
+                                    </div>
+                                ` : ''}
+                            </div>
+                            
+                            <!-- Google Maps 聯動導航鈕 -->
+                            ${item.q ? `
+                                <button class="map-btn" onclick="window.open('${mapsUrl(item.q)}', '_blank')">
+                                    <i class="ti ti-map-2"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    `;[cite: 1]
+                });
+            });
+
+            // 本日總結注意事項 (例如預約電話、排隊提示)
+            if (day.res && day.res.length > 0) {
+                html += `
+                    <div class="day-res-box">
+                        <div class="day-res-title"><i class="ti ti-bell-ringing"></i> 當日行前必看提醒</div>
+                        ${day.res.map(r => `<div class="day-res-item">• ${r.d}</div>`).join('')}
+                    </div>
+                `;[cite: 1]
+            } else {
+                html += `<div style="height: 30px;"></div>`;
+            }
+
+            mainPanel.innerHTML = html;
+        }
+
+        // 啟動 App
+        initApp();
     </script>
 </body>
 </html>
