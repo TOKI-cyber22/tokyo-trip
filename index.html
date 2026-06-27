@@ -108,7 +108,6 @@
 
         .timeline-container { padding: 0 16px; display: flex; flex-direction: column; gap: 0; }
         
-        /* 拖曳項目外包裹層 */
         .timeline-item-wrapper {
             display: flex;
             flex-direction: column;
@@ -126,13 +125,11 @@
             border: 1px solid #f0f2f5;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        /* 拖曳時的陰影視覺效果 */
         .sortable-chosen {
             box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
             opacity: 0.9;
         }
 
-        /* 拖曳把手樣式 */
         .drag-handle {
             display: flex;
             align-items: center;
@@ -163,7 +160,24 @@
         .item-title { font-size: 1.05rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px; line-height: 1.4; }
         .item-meta { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
 
-        /* 右上角操作按鈕群組 */
+        /* 橫向並排標籤列（核心優化：支援多標籤自動並排與換行） */
+        .tags-row { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 6px; 
+            margin-top: 8px; 
+            margin-bottom: 4px;
+        }
+        .tag-capsule { 
+            font-size: 0.75rem; 
+            padding: 4px 10px; 
+            border-radius: 20px; 
+            background-color: #f3f4f6; 
+            color: #4b5563; 
+            border: 1px solid #e5e7eb;
+            font-weight: 500;
+        }
+
         .card-actions {
             position: absolute;
             right: 12px;
@@ -214,17 +228,12 @@
         .box-deal { background-color: #fffaf0; border: 1px solid #ffedd5; color: #c2410c; }
         .box-card-tip { background-color: #f0fdf4; border: 1px solid #d1fae5; color: #065f46; }
 
-        .tags-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
-        .tag-capsule { font-size: 0.75rem; padding: 2px 8px; border-radius: 20px; background-color: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; }
-
         .day-res-box { background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--border-radius); margin: 20px 16px 40px 16px; padding: 16px; }
         .day-res-title { font-size: 0.95rem; font-weight: 700; color: #166534; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
         .day-res-item { font-size: 0.85rem; color: #1e293b; margin-bottom: 4px; }
 
-        /* 購物清單專屬樣式 */
         .shop-list-container { padding: 0 16px 40px 16px; }
         
-        /* 升級版線上表單 */
         .add-shop-form {
             background-color: var(--card-bg);
             padding: 16px;
@@ -280,7 +289,6 @@
         .shop-item.checked .shop-item-text { text-decoration: line-through; color: var(--text-muted); }
         .shop-item-desc { font-size: 0.82rem; color: var(--text-muted); font-weight: 400; margin-top: 2px; line-height: 1.4; }
         
-        /* 價錢精緻標籤 */
         .shop-item-price {
             display: inline-block;
             background-color: #fff5f5;
@@ -293,7 +301,6 @@
             border: 1px solid #fee2e2;
         }
 
-        /* 購物清單右側操作鈕 */
         .shop-actions {
             display: flex;
             gap: 6px;
@@ -348,13 +355,12 @@
 
         var TL = {eat:"正餐", sweet:"甜點", shop:"購物", spot:"景點", event:"祭典"};
         
-        // 初始行程核心數據
         var initialDaysData = [
 {tab:"7/21 二",title:"7/21（週二）",sub:"凌晨4點羽田落地 → 押上放行李 → 淺草・人形町・銀座・有樂町",
 secs:[
 {l:"早上",items:[
 {t:"08:00",n:"MISOJYU（早餐）",type:"eat",a:"淺草／淺草站",h:"08:00–15:30",q:"Misojyu Asakusa Tokyo",tr:"吃飽後 🚶 步行 10 分鐘"},
-{t:"09:00",n:"晴空塔 Solamachi 逛街",type:"shop",a:"押上／晴空塔商仙",h:"10:00–21:00",q:"Tokyo Solamachi Oshiage",tags:["Citen (3F)"],
+{t:"09:00",n:"晴空塔 Solamachi 逛街",type:"shop",a:"押上／晴空塔商場",h:"10:00–21:00",q:"Tokyo Solamachi Oshiage",tags:["Citen (3F)"],
 deals:[{b:"晴空塔退稅趴數",d:"退 10% 消費稅 － 商場扣除 2.1% 手續費 ＝ 實際拿到 7.9%"}],
 card_tip: CARD_STRATEGY.taishin_unlimited, tr:"從晴空塔 🚶 步行 10 分鐘"},
 {t:"11:30",n:"宿六（午間場）",type:"eat",a:"淺草／淺草站",h:"午11:30–14:00",w:"13:00前入座，週二僅午間場",q:"Onigiri Asakusa Yadoroku",tr:"搭乘地鐵淺草線 🚇 約 15 分鐘"}
@@ -447,7 +453,7 @@ card_tip: CARD_STRATEGY.bear_yodobashi, tr:"🚶 步行約 5 分鐘"},
 deals:[{b:"商場獨立退稅",d:"無統一櫃台。各店家滿 5,000 日圓直接在店內免稅 10%（0%手續費），實拿 10%！"}],
 card_tip: CARD_STRATEGY.taishin_unlimited, tr:"搭乘地鐵線 🚇 約 20 分鐘"},
 {t:"18:00",n:"東京鐵塔",type:"spot",a:"赤羽橋站",h:"09:00–23:00",q:"Tokyo Tower Japan",tr:"🚶 步行即達"},
-{t:"19:00",n:"芝公園",type:"spot",a:"芝公園站",h:"全天",q:"Shiba Park Tokyo",tr:"🚶 步行約 4 分鐘"}
+{t:"19:00",n:"芝公園",type:"spot",a:"芝公園站",h:"全天",q:"Shiba Park Tokyo",tr:"🚶 步行約 4 quarter"}
 ]},
 {l:"晚上",items:[
 {t:"19:30",n:"總本家更科堀井（晚餐）",type:"eat",a:"麻布十番站",h:"夜17:00–20:30",w:"19:30最後點餐",q:"Sarashina Horii Azabujuban Tokyo"}
@@ -491,7 +497,6 @@ secs:[
 res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現場11:15前排隊，現金only"}] }
 ];
 
-        // 初始基礎購物項目
         var defaultShoppingList = [
             { t: "黛珂 DECORTÉ 保養品", d: "銀座 G6 或 新宿伊勢丹（實拿 8.45% 稅，大額無腦刷台新玩旅卡賺 3.3%）", p: "" },
             { t: "Rosy Rosa 彩妝工具", d: "@cosme TOKYO 原宿店（免手續費實退 10%，刷台新玩旅卡 3.3% 無上限）", p: "" },
@@ -504,11 +509,11 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
         ];
 
         // --- 核心 LocalStorage 資料初始化檢查 ---
-        if (!localStorage.getItem('tokyo_days_data_v3')) {
-            localStorage.setItem('tokyo_days_data_v3', JSON.stringify(initialDaysData));
+        if (!localStorage.getItem('tokyo_days_data_v4')) {
+            localStorage.setItem('tokyo_days_data_v4', JSON.stringify(initialDaysData));
         }
-        if (!localStorage.getItem('tokyo_shopping_list_v3')) {
-            localStorage.setItem('tokyo_shopping_list_v3', JSON.stringify(defaultShoppingList));
+        if (!localStorage.getItem('tokyo_shopping_list_v4')) {
+            localStorage.setItem('tokyo_shopping_list_v4', JSON.stringify(defaultShoppingList));
         }
 
         function mapsUrl(q) {
@@ -520,7 +525,7 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
         var activeIndex = 0;
 
         function renderTabs() {
-            var daysData = JSON.parse(localStorage.getItem('tokyo_days_data_v3'));
+            var daysData = JSON.parse(localStorage.getItem('tokyo_days_data_v4'));
             tabsBar.innerHTML = '';
             daysData.forEach(function(day, index) {
                 var btn = document.createElement('button');
@@ -547,9 +552,9 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
             tabsBar.appendChild(shopBtn);
         }
 
-        // --- 渲染日程頁面（自帶拖曳與編輯） ---
+        // --- 渲染日程頁面 ---
         function renderDay(index) {
-            var daysData = JSON.parse(localStorage.getItem('tokyo_days_data_v3'));
+            var daysData = JSON.parse(localStorage.getItem('tokyo_days_data_v4'));
             var day = daysData[index];
             var html = '';
 
@@ -560,14 +565,11 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
 
             day.secs.forEach(function(sec, secIdx) {
                 html += '<div class="section-label"><i class="ti ti-compass"></i> ' + sec.l + '</div>';
-                
-                // 為每個時段容器加上獨立 ID，供 Sortable 綁定
                 html += '<div class="timeline-container" id="sec-container-' + index + '-' + secIdx + '">';
                 
                 sec.items.forEach(function(item, itemIdx) {
                     var label = TL[item.type] || '行程';
                     
-                    // 用包裹層把卡片和交通橋梁包在一起，確保拖曳時整塊移動
                     html += '<div class="timeline-item-wrapper" data-id="' + itemIdx + '">';
                     html += '  <div class="timeline-card">';
                     
@@ -585,6 +587,7 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
                     
                     if (item.h) { html += '      <div class="item-meta"><i class="ti ti-clock"></i> ' + item.h + '</div>'; }
                     
+                    // 🌟 橫向並排多標籤輸出區
                     if (item.tags && item.tags.length > 0) {
                         html += '      <div class="tags-row">';
                         item.tags.forEach(function(tag) {
@@ -623,7 +626,7 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
                     
                     html += '    </div>';
                     
-                    // 操作按鈕區塊 (編輯 + 地圖)
+                    // 操作按鈕群
                     html += '    <div class="card-actions">';
                     html += '      <button class="action-btn" onclick="editTimelineItem(' + index + ',' + secIdx + ',' + itemIdx + ')" title="編輯行程"><i class="ti ti-edit"></i></button>';
                     if (item.q) {
@@ -631,17 +634,17 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
                     }
                     html += '    </div>';
                     
-                    html += '  </div>'; // End timeline-card
+                    html += '  </div>'; 
 
                     if (item.tr) {
                         html += '  <div class="transit-bridge">';
                         html += '    <i class="ti ti-train"></i> ' + item.tr;
                         html += '  </div>';
                     }
-                    html += '</div>'; // End timeline-item-wrapper
+                    html += '</div>'; 
                 });
                 
-                html += '</div>'; // End timeline-container
+                html += '</div>'; 
             });
 
             if (day.res && day.res.length > 0) {
@@ -657,32 +660,29 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
 
             mainPanel.innerHTML = html;
 
-            // 啟用拖曳功能
+            // 綁定 SortableJS 拖曳
             day.secs.forEach(function(sec, secIdx) {
                 var el = document.getElementById('sec-container-' + index + '-' + secIdx);
                 if (el) {
                     Sortable.create(el, {
-                        handle: '.drag-handle', // 限制只能按住把手拖曳
+                        handle: '.drag-handle',
                         animation: 200,
                         onEnd: function (evt) {
-                            var daysDataReloaded = JSON.parse(localStorage.getItem('tokyo_days_data_v3'));
+                            var daysDataReloaded = JSON.parse(localStorage.getItem('tokyo_days_data_v4'));
                             var itemsArray = daysDataReloaded[index].secs[secIdx].items;
-                            
-                            // 重新調整陣列順序
                             var movedItem = itemsArray.splice(evt.oldIndex, 1)[0];
                             itemsArray.splice(evt.newIndex, 0, movedItem);
-                            
-                            localStorage.setItem('tokyo_days_data_v3', JSON.stringify(daysDataReloaded));
-                            renderDay(index); // 即時重繪確保資料與交通橋梁對齊
+                            localStorage.setItem('tokyo_days_data_v4', JSON.stringify(daysDataReloaded));
+                            renderDay(index); 
                         }
                     });
                 }
             });
         }
 
-        // --- 編輯行程內容 ---
+        // --- 🛠️ 升級版：編輯行程（包含多重商家標籤並排功能） ---
         window.editTimelineItem = function(dayIdx, secIdx, itemIdx) {
-            var daysData = JSON.parse(localStorage.getItem('tokyo_days_data_v3'));
+            var daysData = JSON.parse(localStorage.getItem('tokyo_days_data_v4'));
             var item = daysData[dayIdx].secs[secIdx].items[itemIdx];
             
             var newT = prompt("⏰ 修改時間（例如：09:30）：", item.t || "");
@@ -691,6 +691,12 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
             if (newN === null || !newN.trim()) return;
             var newA = prompt("📍 修改地點/位置說明：", item.a || "");
             if (newA === null) return;
+            
+            // 🌟 核心升級：提示使用者輸入多個專櫃，用逗號隔開
+            var currentTagsStr = (item.tags || []).join(', ');
+            var newTagsStr = prompt("🏷️ 想逛的商家標籤（多個商家請用「逗號」隔開，網頁會自動精美並排呈現唷！）：\n例如：Citen (3F), 寶可夢中心 (5F), LOFT (4F)", currentTagsStr);
+            if (newTagsStr === null) return;
+            
             var newW = prompt("⚠️ 修改注意事項/備註（留空則不顯示）：", item.w || "");
             if (newW === null) return;
             
@@ -699,13 +705,24 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
             item.a = newA.trim();
             item.w = newW.trim();
             
-            localStorage.setItem('tokyo_days_data_v3', JSON.stringify(daysData));
+            // 解析標籤字串，同時支援半形與全形逗號
+            if (newTagsStr.trim() === "") {
+                item.tags = [];
+            } else {
+                item.tags = newTagsStr.split(/,|，/).map(function(s) { 
+                    return s.trim(); 
+                }).filter(function(s) { 
+                    return s.length > 0; 
+                });
+            }
+            
+            localStorage.setItem('tokyo_days_data_v4', JSON.stringify(daysData));
             renderDay(dayIdx);
         };
 
-        // --- 🛍️ 渲染全面進化的購物清單 ---
+        // --- 🛍️ 渲染購物清單 ---
         function renderShoppingList() {
-            var list = JSON.parse(localStorage.getItem('tokyo_shopping_list_v3'));
+            var list = JSON.parse(localStorage.getItem('tokyo_shopping_list_v4'));
             var html = '';
             
             html += '<div class="day-header-box">';
@@ -715,7 +732,6 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
             
             html += '<div class="shop-list-container">';
             
-            // 線上新增表單（包含價錢欄位）
             html += '  <div class="add-shop-form">';
             html += '    <input type="text" id="new-shop-title" placeholder="想買的物品名稱（例如：合利他命）">';
             html += '    <input type="text" id="new-shop-desc" placeholder="備註或刷卡戰術（例如：大國藥妝、刷熊本熊卡）">';
@@ -738,7 +754,6 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
                     html += '  <div class="shop-item-text">';
                     html += '    ' + item.t;
                     
-                    // 如果有輸入價錢，顯示亮眼的小標籤
                     if (item.p && item.p.trim() !== '') {
                         html += '    <span class="shop-item-price">💴 ' + item.p + '</span>';
                     }
@@ -746,7 +761,6 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
                     html += '    <div class="shop-item-desc">' + (item.d || '暫無備註') + '</div>';
                     html += '  </div>';
                     
-                    // 操作按鈕群組（修改+刪除）
                     html += '  <div class="shop-actions">';
                     html += '    <button class="shop-action-btn" onclick="editShopItem(' + idx + ')" title="修改項目"><i class="ti ti-edit"></i></button>';
                     html += '    <button class="shop-action-btn btn-delete" onclick="deleteShopItem(' + idx + ')" title="刪除項目"><i class="ti ti-trash"></i></button>';
@@ -759,18 +773,16 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
             mainPanel.innerHTML = html;
         }
 
-        // 購物打勾記憶
         window.toggleShopItem = function(idx, checkbox) {
-            var list = JSON.parse(localStorage.getItem('tokyo_shopping_list_v3'));
+            var list = JSON.parse(localStorage.getItem('tokyo_shopping_list_v4'));
             list[idx].checked = checkbox.checked;
-            localStorage.setItem('tokyo_shopping_list_v3', JSON.stringify(list));
+            localStorage.setItem('tokyo_shopping_list_v4', JSON.stringify(list));
             
             var box = document.getElementById('shop-box-' + idx);
             if (checkbox.checked) { box.classList.add('checked'); }
             else { box.classList.remove('checked'); }
         };
 
-        // 線上即時新增項目
         window.addCustomShopItem = function() {
             var titleInput = document.getElementById('new-shop-title');
             var descInput = document.getElementById('new-shop-desc');
@@ -785,44 +797,41 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
                 return;
             }
             
-            var list = JSON.parse(localStorage.getItem('tokyo_shopping_list_v3'));
+            var list = JSON.parse(localStorage.getItem('tokyo_shopping_list_v4'));
             list.push({ t: t, d: d, p: p, checked: false });
-            localStorage.setItem('tokyo_shopping_list_v3', JSON.stringify(list));
+            localStorage.setItem('tokyo_shopping_list_v4', JSON.stringify(list));
             
             renderShoppingList();
         };
 
-        // 修改購物清單內容 (名稱、備註、價錢)
         window.editShopItem = function(idx) {
-            var list = JSON.parse(localStorage.getItem('tokyo_shopping_list_v3'));
+            var list = JSON.parse(localStorage.getItem('tokyo_shopping_list_v4'));
             var item = list[idx];
             
             var newT = prompt("🛍️ 修改物品名稱：", item.t);
             if (newT === null || !newT.trim()) return;
             var newD = prompt("📝 修改備註或刷卡戰術：", item.d || "");
             if (newD === null) return;
-            var newP = prompt("💴 修改預估金額 (例如：5000日圓、NT$1200，留空則不顯示)：", item.p || "");
+            var newP = prompt("💴 修改預估金額：", item.p || "");
             if (newP === null) return;
             
             list[idx].t = newT.trim();
             list[idx].d = newD.trim();
             list[idx].p = newP.trim();
             
-            localStorage.setItem('tokyo_shopping_list_v3', JSON.stringify(list));
+            localStorage.setItem('tokyo_shopping_list_v4', JSON.stringify(list));
             renderShoppingList();
         };
 
-        // 刪除購物清單項目 (內建、自訂均可刪)
         window.deleteShopItem = function(idx) {
-            if (confirm('確定要刪除這個項目嗎？（刪除後無法復原唷！）')) {
-                var list = JSON.parse(localStorage.getItem('tokyo_shopping_list_v3'));
+            if (confirm('確定要刪除這個項目嗎？')) {
+                var list = JSON.parse(localStorage.getItem('tokyo_shopping_list_v4'));
                 list.splice(idx, 1);
-                localStorage.setItem('tokyo_shopping_list_v3', JSON.stringify(list));
+                localStorage.setItem('tokyo_shopping_list_v4', JSON.stringify(list));
                 renderShoppingList();
             }
         };
 
-        // 初始啟動
         renderTabs();
         renderDay(activeIndex);
     </script>
