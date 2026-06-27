@@ -132,7 +132,6 @@
         .item-title { font-size: 1.05rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px; line-height: 1.4; }
         .item-meta { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
 
-        /* 交通中間橋樑視覺優化 */
         .transit-bridge {
             display: flex;
             align-items: center;
@@ -175,6 +174,46 @@
 
         /* 購物清單專屬樣式 */
         .shop-list-container { padding: 0 16px 40px 16px; }
+        
+        /* 線上新增表單樣式 */
+        .add-shop-form {
+            background-color: var(--card-bg);
+            padding: 16px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.02);
+            border: 1px solid #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .add-shop-form input {
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #e1e4e8;
+            font-size: 0.92rem;
+            -webkit-appearance: none;
+            outline: none;
+        }
+        .add-shop-form input:focus {
+            border-color: var(--primary);
+        }
+        .add-shop-form button {
+            background-color: var(--text-dark);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         .shop-item {
             background-color: var(--card-bg);
             padding: 16px;
@@ -185,13 +224,31 @@
             align-items: center;
             gap: 12px;
             border: 1px solid #f0f2f5;
+            position: relative;
         }
         .shop-item input[type="checkbox"] {
             width: 22px; height: 22px; border-radius: 6px; accent-color: var(--text-dark); cursor: pointer; flex-shrink: 0;
         }
-        .shop-item-text { flex-grow: 1; font-size: 0.98rem; font-weight: 600; }
+        .shop-item-text { flex-grow: 1; font-size: 0.98rem; font-weight: 600; padding-right: 30px; }
         .shop-item.checked .shop-item-text { text-decoration: line-through; color: var(--text-muted); }
-        .shop-item-desc { font-size: 0.82rem; color: var(--text-muted); font-weight: 400; margin-top: 2px; }
+        .shop-item-desc { font-size: 0.82rem; color: var(--text-muted); font-weight: 400; margin-top: 2px; line-height: 1.4; }
+        
+        .delete-shop-btn {
+            background: none;
+            border: none;
+            color: #e05353;
+            cursor: pointer;
+            padding: 8px;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            -webkit-tap-highlight-color: transparent;
+        }
     </style>
 </head>
 <body>
@@ -223,7 +280,7 @@
 secs:[
 {l:"早上",items:[
 {t:"08:00",n:"MISOJYU（早餐）",type:"eat",a:"淺草／淺草站",h:"08:00–15:30",q:"Misojyu Asakusa Tokyo",tr:"吃飽後 🚶 步行 10 分鐘"},
-{t:"09:00",n:"晴空塔 Solamachi 逛街",type:"shop",a:"押上／晴空塔商場",h:"10:00–21:00",q:"Tokyo Solamachi Oshiage",tags:["Citen (3F)"],
+{t:"09:00",n:"晴空塔 Solamachi 逛街",type:"shop",a:"押上／晴空塔商仙",h:"10:00–21:00",q:"Tokyo Solamachi Oshiage",tags:["Citen (3F)"],
 deals:[{b:"晴空塔退稅趴數",d:"退 10% 消費稅 － 商場扣除 2.1% 手續費 ＝ 實際拿到 7.9%"}],
 card_tip: CARD_STRATEGY.taishin_unlimited, tr:"從晴空塔 🚶 步行 10 分鐘"},
 {t:"11:30",n:"宿六（午間場）",type:"eat",a:"淺草／淺草站",h:"午11:30–14:00",w:"13:00前入座，週二僅午間場",q:"Onigiri Asakusa Yadoroku",tr:"搭乘地鐵淺草線 🚇 約 15 分鐘"}
@@ -296,7 +353,7 @@ card_tip: CARD_STRATEGY.taishin_unlimited, tr:"🚶 步行約 8 分鐘"},
 {t:"16:15",n:"Chacott 表參道旗艦店",type:"shop",a:"表參道站",h:"11:00–20:00",w:"獨立整棟專賣店",q:"Chacott Omotesando Tokyo",
 deals:[{b:"旗艦店獨立退稅",d:"【全東京最齊全】現場直接退 10% 完整消費稅，不收手續費！實拿 10%！"}],
 card_tip: CARD_STRATEGY.taishin_unlimited, tr:"搭乘電車 🚃 約 15 分鐘"},
-{t:"17:15",n:"神田松屋（早晚餐）",type:"eat",a:"神田站",h:"週五11:00–20:30",w:"19:30前入座",q:"Kanda Matsuya Tokyo",tr:"搭乘電車 🚃 約 10 分鐘"}
+{t:"17:15",n:"神田松屋（早晚餐）",type:"eat",a:"神田站",h:"週五11:00–20:30",w:"19:30前入座",q:"Kanda Matsuya Tokyo",tr:"搭乘電車 🚃 約 15 分鐘"}
 ]},
 {l:"晚上",items:[
 {t:"18:30",n:"神樂坂ほおずき市",type:"event",a:"飯田橋站",h:"17:00–21:00",tr:"毘沙門天善國寺周邊",w:"酸漿燈籠・屋台美食",q:"神楽坂 毘沙門天 善國寺 Tokyo"}
@@ -308,7 +365,7 @@ secs:[
 {t:"09:30",n:"Yodobashi Camera新宿西口",type:"shop",a:"新宿西口站",h:"09:30–22:00",w:"GR3確認庫存",q:"Yodobashi Camera Shinjuku Nishiguchi Tokyo",tags:["Montbell拖鞋"],
 deals:[{b:"電器免稅",d:"滿 5,000 日圓免稅 10%。"}],
 card_tip: CARD_STRATEGY.bear_yodobashi, tr:"🚶 步行約 5 分鐘"},
-{t:"11:45",n:"六歌仙本店（午餐）",type:"eat",a:"西新宿／Sunflower大樓 6F",h:"11:00–23:00",w:"🔥已訂11:45。位於Sunflower大樓6樓",q:"Rokkasen Honten Shinjuku Tokyo",tr:"搭乘JR山手線 🚃 約 8 分鐘"}
+{t:"11:45",n:"六歌仙本店（午餐）",type:"eat",a:"西新宿／Sunflower大樓 6F",h:"11:00–23:00",w:"🔥已訂11:45。位於Sunflower大樓6樓",q:"Rokkasen Hopten Shinjuku Tokyo",tr:"搭乘JR山手線 🚃 約 8 分鐘"}
 ]},
 {l:"下午",items:[
 {t:"14:00",n:"大塚 Fruits Sugi（下午茶）",type:"sweet",a:"大塚站",h:"週六11:00–19:00",w:"吃完高檔燒肉，精緻水果聖代解膩最完美！",q:"Fruits Sugi Kita-Otsuka Tokyo",tr:"搭乘電車或步行 🚃 約 10 分鐘"},
@@ -360,7 +417,7 @@ secs:[
 res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現場11:15前排隊，現金only"}] }
 ];
 
-        // 隨身可打勾購物清單
+        // 隨身內建基礎購物清單
         var defaultShoppingList = [
             { t: "黛珂 DECORTÉ 保養品", d: "銀座 G6 或 新宿伊勢丹（實拿 8.45% 稅，大額無腦刷台新玩旅卡賺 3.3%）" },
             { t: "Rosy Rosa 彩妝工具", d: "@cosme TOKYO 原宿店（免手續費實退 10%，刷台新玩旅卡 3.3% 無上限）" },
@@ -379,6 +436,17 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
         var tabsBar = document.getElementById('tabs-bar');
         var mainPanel = document.getElementById('main-panel');
         var activeIndex = 0;
+
+        // 讀取自訂清單
+        function getCustomItems() {
+            var list = localStorage.getItem('tokyo_custom_shopping_list');
+            return list ? JSON.parse(list) : [];
+        }
+
+        // 儲存自訂清單
+        function saveCustomItems(list) {
+            localStorage.setItem('tokyo_custom_shopping_list', JSON.stringify(list));
+        }
 
         function renderTabs() {
             tabsBar.innerHTML = '';
@@ -480,7 +548,6 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
                     
                     html += '</div>';
 
-                    // 交通動線：渲染在行程與行程中間的橋樑
                     if (item.tr && itemIdx < sec.items.length) {
                         html += '<div class="transit-bridge">';
                         html += '  <i class="ti ti-train"></i> ' + item.tr;
@@ -503,15 +570,25 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
             mainPanel.innerHTML = html;
         }
 
-        // 支援本地記憶儲存（LocalStorage）的打勾清單
+        // 渲染包含線上動態新增功能的購物清單
         function renderShoppingList() {
             var html = '';
             html += '<div class="day-header-box">';
             html += '  <div class="day-title">🛍️ 隨身即時購物清單</div>';
-            html += '  <div class="day-sub">勾選狀態會保存於 iPhone 瀏覽器中。本次旅程大額消費主刷台新玩旅卡（3.3% 無上限）最划算！</div>';
+            html += '  <div class="day-sub">可在下方輸入框隨時增加新想到的戰利品！大額血拼主刷台新卡切換「玩旅權益」淨賺 1.8% 超威！</div>';
             html += '</div>';
             
             html += '<div class="shop-list-container">';
+            
+            // 頂部即時新增輸入表單
+            html += '  <div class="add-shop-form">';
+            html += '    <input type="text" id="new-shop-title" placeholder="想買的物品名稱（例如：合利他命、日本軟糖）">';
+            html += '    <input type="text" id="new-shop-desc" placeholder="備註或刷卡戰術（例如：大國藥妝、刷台新玩旅）">';
+            html += '    <button onclick="addCustomShopItem()"><i class="ti ti-plus"></i> 新增至我的隨身清單</button>';
+            html += '  </div>';
+            
+            // 1. 渲染內建基礎清單
+            html += '  <div class="section-label" style="margin-left:0; margin-right:0;"><i class="ti ti-list-check"></i> 內建必逛清單</div>';
             defaultShoppingList.forEach(function(item, idx) {
                 var isChecked = localStorage.getItem('tokyo_shop_item_' + idx) === 'true';
                 var checkedAttr = isChecked ? 'checked' : '';
@@ -525,11 +602,32 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
                 html += '  </div>';
                 html += '</div>';
             });
-            html += '</div>';
             
+            // 2. 渲染自訂新增清單
+            var customList = getCustomItems();
+            if (customList.length > 0) {
+                html += '  <div class="section-label" style="margin-left:0; margin-right:0;"><i class="ti ti-stars"></i> 我自己加的項目</div>';
+                customList.forEach(function(item, idx) {
+                    var isChecked = item.checked;
+                    var checkedAttr = isChecked ? 'checked' : '';
+                    var classAttr = isChecked ? 'shop-item checked' : 'shop-item';
+                    
+                    html += '<div class="' + classAttr + '" id="custom-shop-box-' + idx + '">';
+                    html += '  <input type="checkbox" ' + checkedAttr + ' onchange="toggleCustomShopItem(' + idx + ', this)">';
+                    html += '  <div class="shop-item-text">';
+                    html += '    ' + item.t;
+                    if (item.d) { html += '    <div class="shop-item-desc">' + item.d + '</div>'; }
+                    html += '  </div>';
+                    html += '  <button class="delete-shop-btn" onclick="deleteCustomShopItem(' + idx + ')"><i class="ti ti-trash"></i></button>';
+                    html += '</div>';
+                });
+            }
+            
+            html += '</div>';
             mainPanel.innerHTML = html;
         }
 
+        // 內建清單打勾儲存
         window.toggleShopItem = function(idx, checkbox) {
             var box = document.getElementById('shop-box-' + idx);
             if (checkbox.checked) {
@@ -538,6 +636,48 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
             } else {
                 box.classList.remove('checked');
                 localStorage.setItem('tokyo_shop_item_' + idx, 'false');
+            }
+        };
+
+        // 自訂清單打勾儲存
+        window.toggleCustomShopItem = function(idx, checkbox) {
+            var customList = getCustomItems();
+            customList[idx].checked = checkbox.checked;
+            saveCustomItems(customList);
+            
+            var box = document.getElementById('custom-shop-box-' + idx);
+            if (checkbox.checked) { box.classList.add('checked'); }
+            else { box.classList.remove('checked'); }
+        };
+
+        // 線上點擊新增按鈕
+        window.addCustomShopItem = function() {
+            var titleInput = document.getElementById('new-shop-title');
+            var descInput = document.getElementById('new-shop-desc');
+            
+            var t = titleInput.value.trim();
+            var d = descInput.value.trim();
+            
+            if (!t) {
+                alert('請先輸入想要購買的物品名稱唷！');
+                return;
+            }
+            
+            var customList = getCustomItems();
+            customList.push({ t: t, d: d, checked: false });
+            saveCustomItems(customList);
+            
+            // 重新渲染清單
+            renderShoppingList();
+        };
+
+        // 點擊垃圾桶刪除項目
+        window.deleteCustomShopItem = function(idx) {
+            if (confirm('確定要刪除這個自訂項目嗎？')) {
+                var customList = getCustomItems();
+                customList.splice(idx, 1);
+                saveCustomItems(customList);
+                renderShoppingList();
             }
         };
 
