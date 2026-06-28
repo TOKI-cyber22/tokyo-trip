@@ -49,6 +49,21 @@
             z-index: 100;
             border-bottom: 1px solid #eee;
         }
+        .reset-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #bdc3c7;
+            font-size: 1.15rem;
+            cursor: pointer;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            -webkit-tap-highlight-color: transparent;
+        }
 
         .tabs-container {
             display: flex;
@@ -362,7 +377,10 @@
 </head>
 <body>
 
-    <div class="app-header">東京自主遊隨身手冊 🗼</div>
+    <div class="app-header">
+        東京自主遊隨身手冊 🗼
+        <button class="reset-btn" onclick="resetAppState()" title="清除所有修改，還原成原始行程"><i class="ti ti-refresh-alert"></i></button>
+    </div>
     <div class="tabs-container" id="tabs-bar"></div>
     <div id="main-panel"></div>
 
@@ -462,6 +480,55 @@
         var TL = {eat:"正餐", sweet:"甜點", shop:"購物", spot:"景點", event:"祭典"};
         var currentActiveTab = "day_0"; 
         var currentEditCoords = null; 
+
+        // ============================================================
+        // 💾 本機自動存檔機制（localStorage）
+        // ------------------------------------------------------------
+        // 拖曳排序、編輯行程、勾選購物清單、記帳等操作，都會即時存進
+        // 這個瀏覽器的 localStorage。下次用同一個瀏覽器打開這個檔案
+        // （同一個網址或同一份本機檔案），會自動讀回上次的進度。
+        // 注意：存檔僅存在「這個瀏覽器」裡，換瀏覽器、換裝置、清除
+        // 瀏覽資料都不會同步，請自行斟酌定期截圖或備份重要資訊。
+        // ============================================================
+        var STORAGE_KEY = "tokyo_trip_handbook_v1";
+
+        function saveAppState() {
+            try {
+                var payload = {
+                    days: initialDaysData,
+                    shop: defaultShoppingList,
+                    expenses: defaultExpenses,
+                    savedAt: new Date().toISOString()
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+            } catch (e) {
+                console.warn("自動存檔失敗（可能是隱私瀏覽模式或儲存空間已滿）：", e);
+            }
+        }
+
+        function loadAppState() {
+            try {
+                var raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return false;
+                var payload = JSON.parse(raw);
+                if (payload && payload.days) {
+                    initialDaysData = payload.days;
+                    defaultShoppingList = payload.shop || defaultShoppingList;
+                    defaultExpenses = payload.expenses || defaultExpenses;
+                    return true;
+                }
+            } catch (e) {
+                console.warn("讀取存檔失敗，將使用預設行程：", e);
+            }
+            return false;
+        }
+
+        function resetAppState() {
+            if (confirm("確定要清除目前所有的修改（拖曳排序、編輯內容、購物清單、記帳），還原成最原始的行程內容嗎？此動作無法復原。")) {
+                try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+                location.reload();
+            }
+        }
         
         var MASTER_TAX_DATA = [
             { n: "Bic Camera (必買電器旗艦)", fee: "0%", rate: "10% 全退", coupon: "10%免稅 + 7%電器折價券 / 5%藥妝券", note: "結帳臨櫃直接扣除免稅額，不囉唆零手續費！疊加 7% 折價券現折 17%，買電器、玩具及遊戲機神店。", rank: 1 },
@@ -672,6 +739,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', function() {
+            loadAppState();
             renderTabs();
             switchTab("day_0");
         });
@@ -962,6 +1030,7 @@
 
             if (field === 'jpy') item.jpy = parseFloat(value) || 0;
             if (field === 'twd') item.twd = parseFloat(value) || 0;
+            saveAppState();
 
             var jpyVal = item.jpy;
             var twdVal = item.twd;
@@ -995,11 +1064,13 @@
                 if (isChecked) card.classList.add('checked');
                 else card.classList.remove('checked');
             }
+            saveAppState();
         }
 
         function deleteShopItem(index) {
             if(confirm("確定刪除此項購買清單嗎？")) {
                 defaultShoppingList.splice(index, 1);
+                saveAppState();
                 renderPanel();
             }
         }
@@ -1052,6 +1123,7 @@
                 defaultShoppingList.push({ t: tStr, lang: langStr, d: dStr, jpy: jpyNum, twd: twdNum, checked: false });
             }
             closeShopModal();
+            saveAppState();
             renderPanel();
         }
 
@@ -1094,6 +1166,7 @@
             else delete item.w;
             
             closeEditModal();
+            saveAppState();
             renderPanel();
         }
 
@@ -1119,12 +1192,14 @@
             defaultExpenses[dayIdx].push({ name: nameStr, price: priceNum, note: noteStr });
             
             closeAccountModal();
+            saveAppState();
             renderPanel();
         }
 
         function deleteExpense(dayIdx, eIdx) {
             if (confirm("確定移除這筆花費明細嗎？")) {
                 defaultExpenses[dayIdx].splice(eIdx, 1);
+                saveAppState();
                 renderPanel();
             }
         }
@@ -1179,6 +1254,7 @@
                     
                     // 4. 將排列重新分配好的乾淨資料倒回主資料庫，並觸發畫面刷新
                     dayData.secs = newSecs;
+                    saveAppState();
                     renderPanel();
                 }
             });
