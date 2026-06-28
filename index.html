@@ -256,11 +256,10 @@
             border-radius: 10px;
             border: 1px dashed #e2e8f0;
         }
+        .shop-calc-box { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; background-color: #f8f9fa; padding: 12px; border-radius: 10px; border: 1px dashed #e2e8f0; }
         .shop-calc-field { display: flex; flex-direction: column; gap: 4px; }
         .shop-calc-field label { font-size: 0.75rem; font-weight: 700; color: #718096; }
-        .shop-calc-field input[type="number"] {
-            padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.88rem; outline: none; -moz-appearance: textfield;
-        }
+        .shop-calc-field input[type="number"] { padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.88rem; outline: none; -moz-appearance: textfield; }
         .shop-calc-field input[type="number"]::-webkit-outer-spin-button,
         .shop-calc-field input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         .shop-calc-result { font-size: 0.82rem; font-weight: 500; color: var(--text-dark); display: flex; align-items: center; margin-top: 4px; }
@@ -288,9 +287,7 @@
         .modal-content h3 { margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 6px; }
         .form-group { display: flex; flex-direction: column; gap: 6px; }
         .form-group label { font-size: 0.85rem; font-weight: 700; color: #4b5563; }
-        .form-group input, .form-group textarea {
-            padding: 11px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.92rem; outline: none; font-family: inherit;
-        }
+        .form-group input, .form-group textarea { padding: 11px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.92rem; outline: none; font-family: inherit; }
         .form-group input:focus, .form-group textarea:focus { border-color: var(--text-dark); }
         .modal-actions { display: flex; gap: 10px; margin-top: 8px; }
         .modal-btn { flex: 1; padding: 12px; border-radius: 8px; border: none; font-size: 0.92rem; font-weight: 600; cursor: pointer; }
@@ -334,7 +331,7 @@
     <div class="tabs-container" id="tabs-bar"></div>
     <div id="main-panel"></div>
 
-    <!-- 🌟 行程主表單編輯彈窗 -->
+    <!-- 行程主表單編輯彈窗 -->
     <div id="edit-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h3><i class="ti ti-edit"></i> 編輯行程詳細資訊</h3>
@@ -348,7 +345,7 @@
             </div>
             <div class="form-group">
                 <label>📍 地點 / 位置說明</label>
-                <input type="text" id="modal-addr" placeholder="max：押上／晴空塔商場">
+                <input type="text" id="modal-addr" placeholder="例如：押上／晴空塔商場">
             </div>
             <div class="form-group">
                 <label>🏷️ 必逛商家標籤（多項請用逗號隔開）</label>
@@ -365,7 +362,7 @@
         </div>
     </div>
 
-    <!-- 🌟 購物清單獨立表單彈窗（已追加日語/英語欄位） -->
+    <!-- 購物清單獨立表單彈窗 -->
     <div id="shop-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h3 id="shop-modal-title"><i class="ti ti-shopping-cart"></i> 新增購物項目</h3>
@@ -397,7 +394,7 @@
         </div>
     </div>
 
-    <!-- 🌟 記帳本明細專用輸入彈窗 -->
+    <!-- 記帳本明細專用輸入彈窗 -->
     <div id="account-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h3><i class="ti ti-cash-banknote"></i> 新增實際消費紀錄</h3>
@@ -425,17 +422,6 @@
         var CARD_STRATEGY = {
             bear_yodobashi: "【優先刷這張】玉山熊本熊卡：日本特定通路享免手續費 + 1% + 加碼 5% ＝ 最高 7.5% 回饋！（加碼上限刷台幣 1 萬，爆額改刷台新玩旅）",
             taishin_unlimited: "【無腦刷首選】台新卡（切換玩旅權益）：海外消費不限實體/線上享 3.3% 回饋無上限！扣除 1.5% 手續費後仍穩賺 1.8%，大額血拼免操心！"
-        };
-
-        var AETA_STORES = {
-            "SUPER A MARKET 青山店": "SUPER A MARKET Aoyama Tokyo",
-            "SUPER A MARKET NEWoMan店": "SUPER A MARKET NEWoMan Shinjuku Tokyo",
-            "Cibone 青山/表參道店": "Cibone Aoyama Tokyo",
-            "Cibone CASE（Ginza Six 4F）": "Cibone Case Ginza Six Tokyo",
-            "ISETAN ReStyle（伊勢丹新宿本館3F）": "Isetan Shinjuku ReStyle",
-            "ISETAN MEN'S Creators（メンズ館）": "Isetan Men's Tokyo",
-            "STEVEN ALAN（Lumine2店）": "Steven Alan Lumine2 Shinjuku",
-            "STUDIOUS（澀谷PARCO店）": "Studious Shibuya Parco"
         };
 
         var TL = {eat:"正餐", sweet:"甜點", shop:"購物", spot:"景點", event:"祭典"};
@@ -473,7 +459,7 @@
                 ]},
                 {l:"傍晚",items:[
                     {t:"17:30",n:"東京交通會館 Kanmi Okame",type:"sweet",a:"有樂町／東京交通會館 2F",h:"11:00–18:30",w:"17:30入座，18:00前點餐。位於交通會館2樓",q:"Kanmi Okame Tokyo Kotsu Kaikan",tr:"🚶 步行約 8 分鐘"},
-                    {t:"18:30",n:"Ginza Six 逛街",type:"shop",a:"銀座站",h:"10:30–20:30",w:"約2小時，20:30後銀座自選晚餐",q:"Ginza Six Tokyo",tags:["黛珂DECORTÉ(B1F)"],aeta:["Cibone CASE（Ginza Six 4F）"],deals:[{b:"G6 百貨退稅",d:"退 10% 消費稅 － 百貨扣除 1.55% 手續費 ＝ 實際拿到 8.45%"}],card_tip: CARD_STRATEGY.taishin_unlimited}
+                    {t:"18:30",n:"Ginza Six 逛街",type:"shop",a:"銀座站",h:"10:30–20:30",w:"約2小時，20:30後銀座自選晚餐",q:"Ginza Six Tokyo",tags:["黛珂DECORTÉ(B1F)"],deals:[{b:"G6 百貨退稅",d:"退 10% 消費稅 － 百貨扣除 1.55% 手續費 ＝ 實際拿到 8.45%"}],card_tip: CARD_STRATEGY.taishin_unlimited}
                 ]}
             ]},
             {tab:"7/22 三",title:"7/22（週三）",sub:"ONE@TOKYO checkout → 濱松町寄放行李 → 橫濱麵包超人 → 澀谷整天", secs:[
@@ -488,7 +474,7 @@
                     {t:"13:30",n:"→濱松町正式check-in",type:"spot",a:"濱松町",tr:"搭乘JR山手線 🚃 約 10 分鐘"},
                     {t:"17:00",n:"Uohide夜間場晚餐",type:"eat",a:"澀谷站",h:"夜17:00–22:30",w:"17:00開門即入",q:"Uohide Shibuya Sakuragaoka Tokyo",tr:"🚶 步行約 5 分鐘"},
                     {t:"18:30",n:"澀谷109逛街",type:"shop",a:"澀谷站",h:"10:00–21:00",q:"Shibuya 109 Tokyo",tags:["新潮日系拍貼機專區","辣妹潮流服飾"],deals:[{b:"109 商場退稅",d:"持發票與商品前往 4F 免稅櫃台辦理統一退稅。"}],card_tip: CARD_STRATEGY.taishin_unlimited, tr:"🚶 步行約 5 分鐘"},
-                    {t:"",n:"澀谷PARCO逛街",type:"shop",a:"澀谷站",h:"11:00–21:00",q:"Shibuya Parco Tokyo",tags:["日系潮流設計師品牌區"],aeta:["STUDIOUS（澀谷PARCO店 3F）"],deals:[{b:"PARCO 退稅",d:"各專櫃現場直接退 10% 稅（0手續費）。"}],card_tip: CARD_STRATEGY.taishin_unlimited, tr:"🚶 步行即達旁棟大樓"},
+                    {t:"",n:"澀谷PARCO逛街",type:"shop",a:"澀谷站",h:"11:00–21:00",q:"Shibuya Parco Tokyo",tags:["日系潮流設計師品牌區"],deals:[{b:"PARCO 退稅",d:"各專櫃現場直接退 10% 稅（0手續費）。"}],card_tip: CARD_STRATEGY.taishin_unlimited, tr:"🚶 步行即達旁棟大樓"},
                     {t:"",n:"Mandarake Shibuya",type:"shop",a:"澀谷BEAM大樓 B2F",h:"12:00–20:00",w:"位於澀谷BEAM大樓B2F，19:30前出",q:"Mandarake Shibuya Tokyo",tags:["Keroro二手"],tr:"🚶 步行約 5 分鐘"},
                     {t:"",n:"VILLAGE VANGUARD",type:"shop",a:"澀谷宇田川町 B1F",h:"11:00–21:00",q:"Village Vanguard Shibuya Tokyo",tags:["Keroro雜貨"],tr:"搭乘小田急線 🚇 約 5 分鐘"},
                     {t:"21:30",n:"ろばた代々木八幡（宵夜）",type:"eat",a:"代々木八幡站",h:"17:00–23:00",q:"産直市場 ろばた 渋谷代々木八幡店"}
@@ -511,7 +497,7 @@
             ], res:[{d:"韻松亭：已預約 7/23(四) 15:00 一人位。電話備查：03-3821-8126"},{d:"上午去赤坂 Fru-Full 後，搭乘千代田線可直達千駄木(TAYORI)，動線極順。"}]},
             {tab:"7/24 五",title:"7/24（週五）",sub:"表參道・青山・原宿 → 神田 → 神樂坂ほおずき市", secs:[
                 {l:"上午",items:[
-                    {t:"10:00",n:"根津美術館",type:"spot",a:"南青山／表參道站",h:"週五✅10:00–17:00",q:"Nezu Museum Museum Tokyo",aeta:["SUPER A MARKET 青山店","Cibone 青山/表參道店"],tr:"🚶 步行約 10 分鐘"}
+                    {t:"10:00",n:"根津美術館",type:"spot",a:"南青山／表參道站",h:"週五✅10:00–17:00",q:"Nezu Museum Museum Tokyo",tr:"🚶 步行約 10 分鐘"}
                 ]},
                 {l:"下午",items:[
                     {t:"12:00",n:"A Happy Pancake（午餐）",type:"eat",a:"表參道站",h:"10:00–19:00",q:"A Happy Pancake Omotesando Tokyo",tr:"🚶 步行約 8 分鐘"},
@@ -546,9 +532,9 @@
                     {t:"12:00",n:"果実園リーベル日比谷",type:"sweet",a:"日比谷／日比谷Chante B1F",h:"11:00–20:00",w:"位於日比谷Chante地下一樓",q:"Kajitsuen Libel Hibiya Chante Tokyo",tr:"搭乘地鐵 🚇 約 20 分鐘"}
                 ]},
                 {l:"下午・晚上",items:[
-                    {t:"13:30",n:"新宿伊勢丹逛街",type:"shop",a:"新宿三丁目站",h:"10:00–20:00",q:"Isetan Shinjuku Tokyo",tags:["黛珂DECORTÉ (本館1F)"],aeta:["ISETAN ReStyle（本館3F）","ISETAN MEN'S Creators"],deals:[{b:"伊勢丹退稅",d:"退 10% 消費稅 － 百貨扣除 1.55% 手續費 ＝ 實際拿到 8.45%。(至本館 6F 辦理)"}],card_tip: CARD_STRATEGY.taishin_unlimited, tr:"🚶 步行約 5 分鐘"},
-                    {t:"15:30",n:"NEWoMan逛街",type:"shop",a:"新宿站",h:"週日11:00–20:00",q:"NEWoMan Shinjuku Tokyo",aeta:["SUPER A MARKET NEWoMan店 (1F)"],deals:[{b:"NEWoMan 退稅",d:"退 10% 消費稅 － 百貨扣除 1.55% 手續費 ＝ 實際拿到 8.45%。(至 2F 免稅櫃台)"}],card_tip: CARD_STRATEGY.taishin_unlimited, tr:"🚶 步行即達"},
-                    {t:"18:00",n:"Lumine 2逛街",type:"shop",a:"新宿站",h:"11:00–21:00",q:"Lumine 2 Shinjuku Tokyo",tags:["Citen (4F)"],aeta:["STEVEN ALAN（Lumine2店 3F）"],deals:[{b:"Lumine 2 退稅",d:"退 10% 消費稅 － 百貨扣除 1.55% 手續費 ＝ 實際拿到 8.45%。(至 2F 免稅櫃檯)"}],card_tip: CARD_STRATEGY.taishin_unlimited, tr:"晚上自理時間"},
+                    {t:"13:30",n:"新宿伊勢丹逛街",type:"shop",a:"新宿三丁目站",h:"10:00–20:00",q:"Isetan Shinjuku Tokyo",tags:["黛珂DECORTÉ (本館1F)"],deals:[{b:"伊勢丹退稅",d:"退 10% 消費稅 － 百貨扣除 1.55% 手續費 ＝ 實際拿到 8.45%。(至本館 6F 辦理)"}],card_tip: CARD_STRATEGY.taishin_unlimited, tr:"🚶 步行約 5 分鐘"},
+                    {t:"15:30",n:"NEWoMan逛街",type:"shop",a:"新宿站",h:"週日11:00–20:00",q:"NEWoMan Shinjuku Tokyo",deals:[{b:"NEWoMan 退稅",d:"退 10% 消費稅 － 百貨扣除 1.55% 手續費 ＝ 實際拿到 8.45%。(至 2F 免稅櫃台)"}],card_tip: CARD_STRATEGY.taishin_unlimited, tr:"🚶 步行即達"},
+                    {t:"18:00",n:"Lumine 2逛街",type:"shop",a:"新宿站",h:"11:00–21:00",q:"Lumine 2 Shinjuku Tokyo",tags:["Citen (4F)"],deals:[{b:"Lumine 2 退稅",d:"退 10% 消費稅 － 百貨扣除 1.55% 手續費 ＝ 實際拿到 8.45%。(至 2F 免稅櫃檯)"}],card_tip: CARD_STRATEGY.taishin_unlimited, tr:"晚上自理時間"},
                     {t:"20:00",n:"新宿周邊晚餐自選",type:"eat",a:"新宿"}
                 ]}
             ]},
@@ -566,25 +552,22 @@
                     {t:"17:00",n:"宿六（夜間場）",type:"eat",a:"淺草站",h:"週一夜17:00–20:00",w:"17:00開門即到，19:00前入座",q:"Onigiri Asakusa Yadoroku Tokyo",tr:"搭乘地鐵 🚇 約 3 分鐘"},
                     {t:"18:30",n:"結Yuwaeru本店（晚餐）",type:"eat",a:"藏前站",h:"週一夜17:30–21:00",q:"Yuwaeru Kura-mae Tokyo"}
                 ]}
-            ], res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現場11:15前排隊，現金only"}] }
+            ], res:[{d:"玉ひ為：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現場11:15前排隊，現金only"}] }
         ];
 
-        // 🌟 核心數據升級：追加 lang (對照名) 屬性，且將備註 d 改用頓號分隔以利小框框並排渲染
         var defaultShoppingList = [
             { t: "理光 RICOH GR3 機身", lang: "RICOH GR III", d: "新宿西口 Yodobashi、Map Camera、優先刷熊本熊卡賺 7.5%", jpy: 130000, twd: 34400, checked: false },
             { t: "黛珂完美校色遮瑕盤", lang: "コスメデコルテ トーンパーフェクティング パレット", d: "新宿伊勢丹、實拿 8.45% 稅、搭配 5% Guest卡", jpy: 4950, twd: 1200, checked: false },
             { t: "Rosy Rosa 彩妝工具", lang: "ロージーローザ", d: "@cosme TOKYO、免手續費實退 10%、刷玩旅卡 3.3%", jpy: 700, twd: 250, checked: false },
-            { t: "Chacott 蜜粉與芭蕾用品", lang: "チャコット コスメティクス", d: "表參道旗艦店、獨立退稅、完整退 10%、主刷玩旅卡", jpy: 2200, twd: 750, checked: false },
+            { t: "Chacott 蜜粉與芭蕾用品", lang: "チャコット コスメティクス", d: "表參道旗館店、獨立退稅、完整退 10%、主刷玩旅卡", jpy: 2200, twd: 750, checked: false },
             { t: "Mont-bell 經典拖鞋", lang: "モンベル Sock-On Sandals", d: "新宿西口、確認免稅、優先刷熊本熊卡", jpy: 3520, twd: 1180, checked: false },
             { t: "Aeta 皮革包袋", lang: "アエタ LEATHER BASKET", d: "Cibone 青山店、NEWoMan專選店、高質感精品", jpy: 45000, twd: 13500, checked: false },
             { t: "CITEN 服飾配件", lang: "シテン 公式通販", d: "晴空塔 3F、Lumine 2 4F、主刷台新玩旅卡", jpy: 4500, twd: 1450, checked: false },
             { t: "Keroro 軍曹周邊商品", lang: "ケロロ軍曹 グッズ", d: "橫濱、原宿 Kiddy Land、池袋太陽城、滿額直接免稅", jpy: 2000, twd: 600, checked: false }
         ];
 
-        // 記帳本初始明細
         var defaultExpenses = { "0":[], "1":[], "2":[], "3":[], "4":[], "5":[], "6":[] };
 
-        // 尋找附近相機名店機制
         function getNearbyCameraShops(addressStr, nameStr) {
             var fullTxt = (addressStr + " " + nameStr).toLowerCase();
             var shops = [];
@@ -599,7 +582,6 @@
             return shops;
         }
 
-        // 系統初始化與分頁渲染流程
         window.addEventListener('DOMContentLoaded', function() {
             renderTabs();
             switchTab("day_0");
@@ -628,7 +610,6 @@
         function renderPanel() {
             var panel = document.getElementById('main-panel');
             
-            // 1. 行程分頁處理
             if (currentActiveTab.startsWith("day_")) {
                 var dayIdx = parseInt(currentActiveTab.replace("day_", ""));
                 var data = initialDaysData[dayIdx];
@@ -648,11 +629,13 @@
 
                 html += `<div class="timeline-container" id="drag-timeline-box">`;
                 
+                // 💥 重要優化：導入扁平化索引計數器，確保拖曳重組時能精準抓到對應資料
+                var flatIdx = 0;
                 data.secs.forEach(function(sec, sIdx) {
                     html += `<div class="section-label"><i class="ti ti-flag"></i> ${sec.l} 時段</div>`;
                     sec.items.forEach(function(item, iIdx) {
                         html += `
-                            <div class="timeline-item-wrapper" data-sidx="${sIdx}" data-iidx="${iIdx}">
+                            <div class="timeline-item-wrapper" data-sidx="${sIdx}" data-iidx="${iIdx}" data-flatidx="${flatIdx}">
                                 <div class="timeline-card">
                                     <div class="drag-handle"><i class="ti ti-selector"></i></div>
                                     <div class="card-left">
@@ -700,6 +683,7 @@
                                 ${item.tr ? `<div class="transit-bridge"><i class="ti ti-arrow-down"></i> ${item.tr}</div>` : ""}
                             </div>
                         `;
+                        flatIdx++;
                     });
                 });
                 
@@ -709,7 +693,6 @@
                 return;
             }
 
-            // 2. 🌟 購物清單 (已追加日語/英語欄位小字，以及備註自動切膠囊標籤功能)
             if (currentActiveTab === "shop") {
                 var html = `
                     <div class="section-label"><i class="ti ti-shopping-cart"></i> 旅日血拼即時換算清單 (固定匯率 0.2)</div>
@@ -735,10 +718,8 @@
                         diffClass = "loss-text";
                     }
 
-                    // 💥 頓號、逗號自動拆解為膠囊小框框邏輯
                     var descHtml = "";
                     if (item.d) {
-                        // 使用正則拆分：支援 頓號、全形逗號、半形逗號
                         var noteTags = item.d.split(/[、，,]/).map(t => t.trim()).filter(t => t.length > 0);
                         if (noteTags.length > 0) {
                             descHtml = `
@@ -755,11 +736,7 @@
                                 <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleShopItem(${index}, this.checked)">
                                 <div class="shop-item-text">
                                     <div style="font-size:1.02rem; font-weight:700; color:var(--text-dark);">${item.t}</div>
-                                    
-                                    <!-- 💥 高質感小字外語欄位（完美不搶戲） -->
                                     ${item.lang ? `<div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 400; margin-top: 2px; line-height: 1.2;">${item.lang}</div>` : ""}
-                                    
-                                    <!-- 💥 自動生成的並排膠囊備註標籤 -->
                                     ${descHtml}
                                 </div>
                             </div>
@@ -794,7 +771,6 @@
                 return;
             }
 
-            // 3. 退稅指南分頁處理
             if (currentActiveTab === "tax") {
                 var html = `<div class="section-label"><i class="ti ti-receipt-tax"></i> 東京核心商場退稅與最優折扣精細評比庫</div>`;
                 html += `<div style="padding:0 16px 40px 16px;">`;
@@ -823,7 +799,6 @@
                 return;
             }
 
-            // 4. 記帳本分頁處理
             if (currentActiveTab === "account") {
                 var grandTotalJpy = 0;
                 for (var key in defaultExpenses) {
@@ -888,7 +863,6 @@
             }
         }
 
-        // 購物清單即時內聯計算邏輯
         function inlineCalcShop(index, field, value) {
             var item = defaultShoppingList[index];
             if (!item) return;
@@ -937,7 +911,6 @@
             }
         }
 
-        // 購物彈窗開關控制 (已同步加入對照語言名稱欄位)
         function openShopModal(index = null) {
             var modal = document.getElementById('shop-modal');
             var titleEl = document.getElementById('shop-modal-title');
@@ -989,7 +962,6 @@
             renderPanel();
         }
 
-        // 行程主表單編輯視窗核心邏輯
         function openEditModal(dayIdx, sIdx, iIdx) {
             currentEditCoords = { d: dayIdx, s: sIdx, i: iIdx };
             var item = initialDaysData[dayIdx].secs[sIdx].items[iIdx];
@@ -1032,7 +1004,6 @@
             renderPanel();
         }
 
-        // 記帳本資料儲存與控制邏輯
         function openAccountModal(dayIndex) {
             document.getElementById('account-day-index').value = dayIndex;
             document.getElementById('account-modal-name').value = "";
@@ -1065,33 +1036,56 @@
             }
         }
 
-        // 導入拖曳核心控制引擎 SortableJS
+        // 💥 強大且修復完畢的拖曳核心控制引擎 SortableJS
         function initSortable() {
             var el = document.getElementById('drag-timeline-box');
             if (!el) return;
             
             Sortable.create(el, {
                 handle: '.drag-handle',
+                draggable: '.timeline-item-wrapper', // 🔒 關鍵修復：限定只能拖曳卡片，防止時段標籤被搞亂
                 animation: 200,
                 ghostClass: 'sortable-chosen',
                 onEnd: function (evt) {
                     var dayIdx = parseInt(currentActiveTab.replace("day_", ""));
-                    var itemsContainer = [];
+                    var dayData = initialDaysData[dayIdx];
                     
-                    initialDaysData[dayIdx].secs.forEach(sec => {
-                        sec.items.forEach(item => { itemsContainer.push(item); });
+                    // 1. 先抓出目前該天「舊順序」的完整扁平資料陣列
+                    var originalFlatItems = [];
+                    dayData.secs.forEach(sec => {
+                        sec.items.forEach(item => { originalFlatItems.push(item); });
                     });
                     
-                    var movedItem = itemsContainer.splice(evt.oldIndex, 1)[0];
-                    itemsContainer.splice(evt.newIndex, 0, movedItem);
+                    // 2. 準備一組全新的乾淨時段結構
+                    var newSecs = dayData.secs.map(sec => ({ l: sec.l, items: [] }));
                     
-                    var ptr = 0;
-                    initialDaysData[dayIdx].secs.forEach(sec => {
-                        var count = sec.items.length;
-                        sec.items = itemsContainer.slice(ptr, ptr + count);
-                        ptr += count;
-                    });
+                    // 3. 掃描拖曳放開後，DOM 上「實際產生」的所有子節點順序
+                    var children = el.children;
+                    var currentSecIdx = -1; // 用來標記目前走到了第幾個時段
                     
+                    for (var i = 0; i < children.length; i++) {
+                        var child = children[i];
+                        
+                        if (child.classList.contains('section-label')) {
+                            // 遇到時段標籤，代表接下來的行程都歸屬到下一個時段
+                            currentSecIdx++;
+                        } else if (child.classList.contains('timeline-item-wrapper')) {
+                            // 遇到行程卡片，防呆確保有時段可以放（預設丟進第一個）
+                            var targetSecIdx = currentSecIdx < 0 ? 0 : currentSecIdx;
+                            if (targetSecIdx >= newSecs.length) targetSecIdx = newSecs.length - 1;
+                            
+                            // 透過卡片上的 data-flatidx 抓取原始的資料物件
+                            var flatIdx = parseInt(child.getAttribute('data-flatidx'));
+                            var itemObj = originalFlatItems[flatIdx];
+                            
+                            if (itemObj) {
+                                newSecs[targetSecIdx].items.push(itemObj);
+                            }
+                        }
+                    }
+                    
+                    // 4. 將排列重新分配好的乾淨資料倒回主資料庫，並觸發畫面刷新
+                    dayData.secs = newSecs;
                     renderPanel();
                 }
             });
