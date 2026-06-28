@@ -111,6 +111,16 @@
 
         .timeline-container { padding: 0 16px; display: flex; flex-direction: column; gap: 0; }
         
+        /* 拖曳清單容器防空安全網 */
+        .sortable-list {
+            min-height: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding-bottom: 8px;
+            border-radius: var(--border-radius);
+        }
+
         .timeline-item-wrapper {
             display: flex;
             flex-direction: column;
@@ -256,7 +266,6 @@
             border-radius: 10px;
             border: 1px dashed #e2e8f0;
         }
-        .shop-calc-box { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; background-color: #f8f9fa; padding: 12px; border-radius: 10px; border: 1px dashed #e2e8f0; }
         .shop-calc-field { display: flex; flex-direction: column; gap: 4px; }
         .shop-calc-field label { font-size: 0.75rem; font-weight: 700; color: #718096; }
         .shop-calc-field input[type="number"] { padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.88rem; outline: none; -moz-appearance: textfield; }
@@ -380,7 +389,7 @@
                 <input type="text" id="shop-modal-desc-input" placeholder="例如：新宿伊勢丹購入、搭配5%卡、刷玩旅卡">
             </div>
             <div class="form-group">
-                <label>💴 日本售價 (日幣 JPY)</label>
+                <label>💴 日本售權 (日幣 JPY)</label>
                 <input type="number" id="shop-modal-jpy-input" placeholder="請輸入純數字，例如：4950">
             </div>
             <div class="form-group">
@@ -541,7 +550,7 @@
             {tab:"7/27 一",title:"7/27（週一）",sub:"人形町・日本橋 → 淺草・藏前收尾", secs:[
                 {l:"上午",items:[
                     {t:"11:15",n:"天ぷら中山（午餐）",type:"eat",a:"人形町站",h:"週一✅午11:15–13:00",w:"現金only・11:15開門前排隊",q:"Tempura Nakayama Ningyocho Tokyo",tr:"🚶 步行 2 分鐘"},
-                    {t:"13:00",n:"玉ひで（午餐）",type:"eat",a:"人形町站",h:"週一✅午11:30–13:30",w:"13:00前入座，需提前預約",q:"Tamahide Ningyocho Tokyo",tr:"搭乘電車 🚃 約 15 分鐘"},
+                    {t:"13:00",n:"玉ひde（午餐）",type:"eat",a:"人形町站",h:"週一✅午11:30–13:30",w:"13:00前入座，需提前預約",q:"Tamahide Ningyocho Tokyo",tr:"搭乘電車 🚃 約 15 分鐘"},
                     {t:"14:00",n:"船橋屋COREDO室町店",type:"sweet",a:"三越前／COREDO室町1 1F",h:"11:00–20:00",q:"Funabashiya COREDO Muromachi Tokyo",tr:"搭乘地鐵線 🚇 約 10 分鐘"}
                 ]},
                 {l:"下午",items:[
@@ -557,7 +566,7 @@
 
         var defaultShoppingList = [
             { t: "理光 RICOH GR3 機身", lang: "RICOH GR III", d: "新宿西口 Yodobashi、Map Camera、優先刷熊本熊卡賺 7.5%", jpy: 130000, twd: 34400, checked: false },
-            { t: "黛珂完美校色遮瑕盤", lang: "コスメデコルテ トーンパーフェクティング パレット", d: "新宿伊勢丹、實拿 8.45% 稅、搭配 5% Guest卡", jpy: 4950, twd: 1200, checked: false },
+            { t: "黛珂完美校色遮瑕盤", lang: "コスメデコルテ トーンパーフェкティング パレット", d: "新宿伊勢丹、實拿 8.45% 稅、搭配 5% Guest卡", jpy: 4950, twd: 1200, checked: false },
             { t: "Rosy Rosa 彩妝工具", lang: "ロージーローザ", d: "@cosme TOKYO、免手續費實退 10%、刷玩旅卡 3.3%", jpy: 700, twd: 250, checked: false },
             { t: "Chacott 蜜粉與芭蕾用品", lang: "チャコット コスメティクス", d: "表參道旗館店、獨立退稅、完整退 10%、主刷玩旅卡", jpy: 2200, twd: 750, checked: false },
             { t: "Mont-bell 經典拖鞋", lang: "モンベル Sock-On Sandals", d: "新宿西口、確認免稅、優先刷熊本熊卡", jpy: 3520, twd: 1180, checked: false },
@@ -627,15 +636,18 @@
                     html += `</div>`;
                 }
 
-                html += `<div class="timeline-container" id="drag-timeline-box">`;
+                html += `<div class="timeline-container">`;
                 
-                // 💥 重要優化：導入扁平化索引計數器，確保拖曳重組時能精準抓到對應資料
+                // 💥 升級為獨立時段容器架構，導入跨時段聯動
                 var flatIdx = 0;
                 data.secs.forEach(function(sec, sIdx) {
                     html += `<div class="section-label"><i class="ti ti-flag"></i> ${sec.l} 時段</div>`;
+                    // 建立獨立的 sortable 容器並標記所屬的原始 sIdx
+                    html += `<div class="sortable-list" data-sidx="${sIdx}">`;
+                    
                     sec.items.forEach(function(item, iIdx) {
                         html += `
-                            <div class="timeline-item-wrapper" data-sidx="${sIdx}" data-iidx="${iIdx}" data-flatidx="${flatIdx}">
+                            <div class="timeline-item-wrapper" data-flatidx="${flatIdx}">
                                 <div class="timeline-card">
                                     <div class="drag-handle"><i class="ti ti-selector"></i></div>
                                     <div class="card-left">
@@ -685,6 +697,8 @@
                         `;
                         flatIdx++;
                     });
+                    
+                    html += `</div>`; // 結束 sortable-list
                 });
                 
                 html += `</div>`;
@@ -1036,58 +1050,50 @@
             }
         }
 
-        // 💥 強大且修復完畢的拖曳核心控制引擎 SortableJS
+        // 💥 強大且完美修復跨時段調動的 SortableJS 多群組控制引擎
         function initSortable() {
-            var el = document.getElementById('drag-timeline-box');
-            if (!el) return;
+            var lists = document.querySelectorAll('.sortable-list');
+            if (!lists.length) return;
             
-            Sortable.create(el, {
-                handle: '.drag-handle',
-                draggable: '.timeline-item-wrapper', // 🔒 關鍵修復：限定只能拖曳卡片，防止時段標籤被搞亂
-                animation: 200,
-                ghostClass: 'sortable-chosen',
-                onEnd: function (evt) {
-                    var dayIdx = parseInt(currentActiveTab.replace("day_", ""));
-                    var dayData = initialDaysData[dayIdx];
-                    
-                    // 1. 先抓出目前該天「舊順序」的完整扁平資料陣列
-                    var originalFlatItems = [];
-                    dayData.secs.forEach(sec => {
-                        sec.items.forEach(item => { originalFlatItems.push(item); });
-                    });
-                    
-                    // 2. 準備一組全新的乾淨時段結構
-                    var newSecs = dayData.secs.map(sec => ({ l: sec.l, items: [] }));
-                    
-                    // 3. 掃描拖曳放開後，DOM 上「實際產生」的所有子節點順序
-                    var children = el.children;
-                    var currentSecIdx = -1; // 用來標記目前走到了第幾個時段
-                    
-                    for (var i = 0; i < children.length; i++) {
-                        var child = children[i];
+            lists.forEach(function(listEl) {
+                Sortable.create(listEl, {
+                    group: 'tokyo-timeline-shared', // 🔒 綁定為同一個共享群組，全面開啟跨時段相互拖曳功能
+                    handle: '.drag-handle',
+                    animation: 200,
+                    ghostClass: 'sortable-chosen',
+                    onEnd: function (evt) {
+                        var dayIdx = parseInt(currentActiveTab.replace("day_", ""));
+                        var dayData = initialDaysData[dayIdx];
                         
-                        if (child.classList.contains('section-label')) {
-                            // 遇到時段標籤，代表接下來的行程都歸屬到下一個時段
-                            currentSecIdx++;
-                        } else if (child.classList.contains('timeline-item-wrapper')) {
-                            // 遇到行程卡片，防呆確保有時段可以放（預設丟進第一個）
-                            var targetSecIdx = currentSecIdx < 0 ? 0 : currentSecIdx;
-                            if (targetSecIdx >= newSecs.length) targetSecIdx = newSecs.length - 1;
+                        // 1. 先撈出該天在「拖曳前」的完整扁平化資料陣列，作為對照
+                        var originalFlatItems = [];
+                        dayData.secs.forEach(sec => {
+                            sec.items.forEach(item => { originalFlatItems.push(item); });
+                        });
+                        
+                        // 2. 準備一組全新的乾淨結構
+                        var newSecs = dayData.secs.map(sec => ({ l: sec.l, items: [] }));
+                        
+                        // 3. 遍歷目前畫面上所有時段清單的 DOM 節點，精確收集拖曳排序後的狀況
+                        var currentLists = document.querySelectorAll('.sortable-list');
+                        currentLists.forEach(function(eachList) {
+                            var sIdx = parseInt(eachList.getAttribute('data-sidx'));
+                            var itemWrappers = eachList.querySelectorAll('.timeline-item-wrapper');
                             
-                            // 透過卡片上的 data-flatidx 抓取原始的資料物件
-                            var flatIdx = parseInt(child.getAttribute('data-flatidx'));
-                            var itemObj = originalFlatItems[flatIdx];
-                            
-                            if (itemObj) {
-                                newSecs[targetSecIdx].items.push(itemObj);
-                            }
-                        }
+                            itemWrappers.forEach(function(wrapper) {
+                                var flatIdx = parseInt(wrapper.getAttribute('data-flatidx'));
+                                var itemObj = originalFlatItems[flatIdx];
+                                if (itemObj) {
+                                    newSecs[sIdx].items.push(itemObj);
+                                }
+                            });
+                        });
+                        
+                        // 4. 將全新分配排序好的乾淨資料倒回主資料庫，並立即刷新介面
+                        dayData.secs = newSecs;
+                        renderPanel();
                     }
-                    
-                    // 4. 將排列重新分配好的乾淨資料倒回主資料庫，並觸發畫面刷新
-                    dayData.secs = newSecs;
-                    renderPanel();
-                }
+                });
             });
         }
     </script>
