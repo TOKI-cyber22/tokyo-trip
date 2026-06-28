@@ -135,10 +135,10 @@
         .timeline-card {
             background-color: var(--card-bg);
             border-radius: var(--border-radius);
-            padding: 16px;
+            padding: 14px 16px;
             box-shadow: 0 4px 14px rgba(0,0,0,0.02);
             display: flex;
-            align-items: flex-start;
+            flex-direction: column;
             position: relative;
             border: 1px solid #f0f2f5;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -148,16 +148,23 @@
             opacity: 0.9;
         }
 
+        .card-main {
+            display: flex;
+            align-items: flex-start;
+            width: 100%;
+        }
+
         .drag-handle {
             display: flex;
             align-items: center;
             justify-content: center;
             color: #bdc3c7;
             cursor: move;
-            padding: 4px 6px;
+            padding: 4px 4px;
             margin-top: 2px;
-            margin-right: 4px;
-            font-size: 1.1rem;
+            margin-right: 2px;
+            font-size: 1.05rem;
+            flex-shrink: 0;
             touch-action: none;
         }
 
@@ -165,18 +172,19 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 58px;
+            width: 50px;
             flex-shrink: 0;
-            margin-right: 12px;
+            margin-right: 10px;
             border-right: 1px dashed #e5e7eb;
             padding-right: 8px;
         }
-        .time-text { font-size: 1.05rem; font-weight: 700; color: var(--text-dark); }
-        .type-badge { font-size: 0.72rem; padding: 3px 7px; border-radius: 6px; margin-top: 6px; font-weight: 600; text-align: center; }
+        .time-text { font-size: 0.98rem; font-weight: 700; color: var(--text-dark); }
+        .type-badge { font-size: 0.7rem; padding: 3px 6px; border-radius: 6px; margin-top: 6px; font-weight: 600; text-align: center; }
 
-        .card-right { flex-grow: 1; padding-right: 80px; }
-        .item-title { font-size: 1.05rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px; line-height: 1.4; }
-        .item-meta { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
+        .card-right { flex-grow: 1; min-width: 0; }
+        .item-title { font-size: 1.02rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px; line-height: 1.45; overflow-wrap: break-word; word-break: break-word; }
+        .item-meta { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; display: flex; align-items: flex-start; gap: 5px; }
+        .item-meta i { margin-top: 2px; flex-shrink: 0; }
 
         .tags-row { 
             display: flex; 
@@ -196,27 +204,30 @@
         }
 
         .card-actions {
-            position: absolute;
-            right: 12px;
-            top: 14px;
             display: flex;
-            gap: 6px;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed #eee;
         }
         .action-btn {
-            background-color: #f1f3f5;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+            background-color: #f8f9fa;
+            border: 1px solid #eef0f2;
+            flex: 1;
+            height: 38px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 6px;
             text-decoration: none;
-            border: none;
             cursor: pointer;
-            color: var(--text-dark);
+            color: #4b5563;
+            font-size: 0.82rem;
+            font-weight: 600;
             -webkit-tap-highlight-color: transparent;
         }
-        .action-btn i { font-size: 1.05rem; }
+        .action-btn i { font-size: 1rem; }
 
         .transit-bridge {
             display: flex;
@@ -293,12 +304,12 @@
         }
         .shop-item-header { display: flex; align-items: flex-start; gap: 12px; width: 100%; }
         .shop-item input[type="checkbox"] { width: 22px; height: 22px; border-radius: 6px; accent-color: var(--text-dark); cursor: pointer; flex-shrink: 0; margin-top: 2px; }
-        .shop-item-text { flex-grow: 1; font-size: 0.98rem; font-weight: 600; padding-right: 75px; word-break: break-all; }
+        .shop-item-text { flex-grow: 1; min-width: 0; font-size: 0.98rem; font-weight: 600; overflow-wrap: break-word; word-break: break-word; }
         .shop-item.checked .shop-item-text { text-decoration: line-through; color: var(--text-muted); opacity: 0.6; }
         
         .shop-calc-box {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            display: flex;
+            flex-direction: column;
             gap: 10px;
             margin-top: 10px;
             background-color: #f8f9fa;
@@ -306,18 +317,19 @@
             border-radius: 10px;
             border: 1px dashed #e2e8f0;
         }
-        .shop-calc-box { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; background-color: #f8f9fa; padding: 12px; border-radius: 10px; border: 1px dashed #e2e8f0; }
-        .shop-calc-field { display: flex; flex-direction: column; gap: 4px; }
-        .shop-calc-field label { font-size: 0.75rem; font-weight: 700; color: #718096; }
-        .shop-calc-field input[type="number"] { padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.88rem; outline: none; -moz-appearance: textfield; }
+        .shop-calc-inputs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .shop-calc-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .shop-calc-field label { font-size: 0.72rem; font-weight: 700; color: #718096; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .shop-calc-field input[type="number"] { width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.88rem; outline: none; -moz-appearance: textfield; }
         .shop-calc-field input[type="number"]::-webkit-outer-spin-button,
         .shop-calc-field input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .shop-calc-result { font-size: 0.82rem; font-weight: 500; color: var(--text-dark); display: flex; align-items: center; margin-top: 4px; }
+        .shop-calc-results { display: flex; flex-direction: column; gap: 6px; padding-top: 8px; border-top: 1px dashed #e2e8f0; }
+        .shop-calc-result { font-size: 0.85rem; font-weight: 500; color: var(--text-dark); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
         .profit-text { color: #de3545; font-weight: 800; font-size: 0.92rem; }
         .loss-text { color: #28a745; font-weight: 800; font-size: 0.92rem; }
 
-        .shop-actions { display: flex; gap: 6px; position: absolute; right: 12px; top: 16px; }
-        .shop-action-btn { background: #f8f9fa; border: 1px solid #e1e4e8; color: var(--text-dark); cursor: pointer; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; }
+        .shop-actions { display: flex; gap: 8px; margin-top: 6px; padding-top: 10px; border-top: 1px dashed #eee; }
+        .shop-action-btn { background: #f8f9fa; border: 1px solid #eef0f2; color: #4b5563; cursor: pointer; flex: 1; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.82rem; font-weight: 600; }
         .shop-action-btn.btn-delete { color: #e05353; background-color: #fff5f5; border-color: #fee2e2; }
 
         /* 彈窗樣式 */
@@ -373,12 +385,37 @@
             width: 100%; background: #f1f5f9; border: 1px dashed #cbd5e1; padding: 11px; border-radius: 10px;
             color: #475569; font-weight: 600; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 4px;
         }
+
+        /* 💾 資料備份與傳輸彈窗專用樣式 */
+        .backup-helper-text { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin: 0; }
+        .backup-section {
+            border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .backup-section h4 { margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 6px; }
+        .backup-section p { margin: 0; font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+        .backup-status-text { font-size: 0.78rem; color: var(--text-muted); margin-top: -2px; }
+        .backup-btn {
+            position: absolute;
+            right: 56px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #bdc3c7;
+            font-size: 1.15rem;
+            cursor: pointer;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            -webkit-tap-highlight-color: transparent;
+        }
     </style>
 </head>
 <body>
 
     <div class="app-header">
         東京自主遊隨身手冊 🗼
+        <button class="backup-btn" onclick="openBackupModal()" title="匯出／匯入備份檔，跨裝置傳輸"><i class="ti ti-file-export"></i></button>
         <button class="reset-btn" onclick="resetAppState()" title="清除所有修改，還原成原始行程"><i class="ti ti-refresh-alert"></i></button>
     </div>
     <div class="tabs-container" id="tabs-bar"></div>
@@ -471,6 +508,34 @@
         </div>
     </div>
 
+    <!-- 💾 資料備份與跨裝置傳輸彈窗 -->
+    <div id="backup-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3><i class="ti ti-file-export"></i> 資料備份與跨裝置傳輸</h3>
+            <p class="backup-helper-text">
+                不接任何雲端服務，純粹用一個檔案搬資料：在這台裝置匯出備份檔，自己用 LINE / Email / 雲端硬碟傳到另一台裝置，再匯入即可同步。
+            </p>
+
+            <div class="backup-section">
+                <h4><i class="ti ti-download"></i> 匯出備份檔</h4>
+                <p>把目前所有行程、購物清單、記帳資料打包成一個 .json 檔案下載下來。</p>
+                <button class="modal-btn btn-save" onclick="exportBackupFile()" style="flex:none;"><i class="ti ti-download"></i> 下載備份檔</button>
+            </div>
+
+            <div class="backup-section">
+                <h4><i class="ti ti-upload"></i> 匯入備份檔</h4>
+                <p>選擇之前匯出的 .json 檔案，會用裡面的內容<b>覆蓋</b>這台裝置目前看到的所有資料。</p>
+                <input type="file" id="backup-file-input" accept="application/json,.json" style="display:none;" onchange="handleBackupFileSelected(event)">
+                <button class="modal-btn btn-save" onclick="document.getElementById('backup-file-input').click()" style="flex:none;"><i class="ti ti-upload"></i> 選擇備份檔並匯入</button>
+                <div class="backup-status-text" id="backup-status-text"></div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn btn-cancel" onclick="closeBackupModal()">關閉</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         var CARD_STRATEGY = {
             bear_yodobashi: "【優先刷這張】玉山熊本熊卡：日本特定通路享免手續費 + 1% + 加碼 5% ＝ 最高 7.5% 回饋！（加碼上限刷台幣 1 萬，爆額改刷台新玩旅）",
@@ -485,10 +550,11 @@
         // 💾 本機自動存檔機制（localStorage）
         // ------------------------------------------------------------
         // 拖曳排序、編輯行程、勾選購物清單、記帳等操作，都會即時存進
-        // 這個瀏覽器的 localStorage。下次用同一個瀏覽器打開這個檔案
-        // （同一個網址或同一份本機檔案），會自動讀回上次的進度。
+        // 這個瀏覽器的 localStorage。下次用同一個瀏覽器打開這個檔案，
+        // 會自動讀回上次的進度。
         // 注意：存檔僅存在「這個瀏覽器」裡，換瀏覽器、換裝置、清除
-        // 瀏覽資料都不會同步，請自行斟酌定期截圖或備份重要資訊。
+        // 瀏覽資料都不會同步。如果需要跨裝置同步，請用上方標頭的
+        // 「匯出／匯入」功能，把資料打包成檔案手動搬到別的裝置。
         // ============================================================
         var STORAGE_KEY = "tokyo_trip_handbook_v1";
 
@@ -524,11 +590,97 @@
         }
 
         function resetAppState() {
-            if (confirm("確定要清除目前所有的修改（拖曳排序、編輯內容、購物清單、記帳），還原成最原始的行程內容嗎？此動作無法復原。")) {
+            if (confirm("確定要清除目前所有的修改（拖曳排序、編輯內容、購物清單、記帳），還原成最原始的行程內容嗎？此動作無法復原，若有重要修改建議先匯出備份檔。")) {
                 try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
                 location.reload();
             }
         }
+
+        // ============================================================
+        // 💾 資料備份與跨裝置傳輸（匯出／匯入 JSON 檔案）
+        // ------------------------------------------------------------
+        // 不接任何雲端服務，純粹把目前資料打包成一個 .json 檔案下載，
+        // 自己用 LINE / Email / 雲端硬碟等方式傳到另一台裝置，
+        // 再用「匯入」把該檔案讀回來、覆蓋目前的資料，達成跨裝置同步。
+        // ============================================================
+        function openBackupModal() {
+            var statusEl = document.getElementById('backup-status-text');
+            if (statusEl) statusEl.textContent = "";
+            document.getElementById('backup-modal').style.display = "flex";
+        }
+
+        function closeBackupModal() {
+            document.getElementById('backup-modal').style.display = "none";
+        }
+
+        function exportBackupFile() {
+            try {
+                var payload = {
+                    days: initialDaysData,
+                    shop: defaultShoppingList,
+                    expenses: defaultExpenses,
+                    exportedAt: new Date().toISOString()
+                };
+                var jsonStr = JSON.stringify(payload, null, 2);
+                var blob = new Blob([jsonStr], { type: "application/json" });
+                var url = URL.createObjectURL(blob);
+
+                var dateStr = new Date().toISOString().slice(0, 10);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = "東京自主遊手冊備份_" + dateStr + ".json";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                var statusEl = document.getElementById('backup-status-text');
+                if (statusEl) statusEl.textContent = "✅ 已下載備份檔，請傳到另一台裝置後再匯入";
+            } catch (e) {
+                console.error("匯出失敗：", e);
+                alert("匯出失敗：" + e.message);
+            }
+        }
+
+        function handleBackupFileSelected(event) {
+            var file = event.target.files && event.target.files[0];
+            var statusEl = document.getElementById('backup-status-text');
+            if (!file) return;
+
+            var reader = new FileReader();
+            reader.onload = function() {
+                try {
+                    var payload = JSON.parse(reader.result);
+                    if (!payload || !payload.days) {
+                        throw new Error("檔案格式不正確，找不到行程資料");
+                    }
+                    var confirmMsg = "確定要匯入這個備份檔嗎？\n\n備份時間：" + (payload.exportedAt || "未知") +
+                        "\n\n匯入後會「覆蓋」這台裝置目前的所有行程、購物清單、記帳資料，且無法復原。";
+                    if (!confirm(confirmMsg)) {
+                        event.target.value = "";
+                        return;
+                    }
+                    initialDaysData = payload.days;
+                    defaultShoppingList = payload.shop || defaultShoppingList;
+                    defaultExpenses = payload.expenses || defaultExpenses;
+                    saveAppState();
+                    renderPanel();
+                    if (statusEl) statusEl.textContent = "✅ 匯入成功，資料已更新";
+                    closeBackupModal();
+                } catch (e) {
+                    console.error("匯入失敗：", e);
+                    if (statusEl) statusEl.textContent = "❌ 匯入失敗：" + e.message;
+                    else alert("匯入失敗：" + e.message);
+                } finally {
+                    event.target.value = "";
+                }
+            };
+            reader.onerror = function() {
+                if (statusEl) statusEl.textContent = "❌ 讀取檔案失敗，請再試一次";
+            };
+            reader.readAsText(file);
+        }
+        
         
         var MASTER_TAX_DATA = [
             { n: "Bic Camera (必買電器旗艦)", fee: "0%", rate: "10% 全退", coupon: "10%免稅 + 7%電器折價券 / 5%藥妝券", note: "結帳臨櫃直接扣除免稅額，不囉唆零手續費！疊加 7% 折價券現折 17%，買電器、玩具及遊戲機神店。", rank: 1 },
@@ -798,47 +950,49 @@
                         html += `
                             <div class="timeline-item-wrapper" data-sidx="${sIdx}" data-iidx="${iIdx}" data-flatidx="${flatIdx}">
                                 <div class="timeline-card">
-                                    <div class="drag-handle"><i class="ti ti-selector"></i></div>
-                                    <div class="card-left">
-                                        <div class="time-text">${item.t || "—"}</div>
-                                        <div class="type-badge" style="background-color:var(--bg-${item.type}); color:var(--text-${item.type});">${TL[item.type] || "行程"}</div>
-                                    </div>
-                                    <div class="card-right">
-                                        <div class="item-title">${item.n}</div>
-                                        <div class="item-meta"><i class="ti ti-map-pin"></i> ${item.a}</div>
-                                        ${item.h ? `<div class="item-meta"><i class="ti ti-clock"></i> ${item.h}</div>` : ""}
-                                        ${item.w ? `<div class="item-note box-warning">💡 備註：${item.w}</div>` : ""}
-                                        
-                                        ${item.tags ? `
-                                            <div class="tags-row">
-                                                ${item.tags.map(t => `<span class="tag-capsule">🛒 ${t}</span>`).join('')}
-                                            </div>
-                                        ` : ""}
+                                    <div class="card-main">
+                                        <div class="drag-handle"><i class="ti ti-selector"></i></div>
+                                        <div class="card-left">
+                                            <div class="time-text">${item.t || "—"}</div>
+                                            <div class="type-badge" style="background-color:var(--bg-${item.type}); color:var(--text-${item.type});">${TL[item.type] || "行程"}</div>
+                                        </div>
+                                        <div class="card-right">
+                                            <div class="item-title">${item.n}</div>
+                                            <div class="item-meta"><i class="ti ti-map-pin"></i> ${item.a}</div>
+                                            ${item.h ? `<div class="item-meta"><i class="ti ti-clock"></i> ${item.h}</div>` : ""}
+                                            ${item.w ? `<div class="item-note box-warning">💡 備註：${item.w}</div>` : ""}
+                                            
+                                            ${item.tags ? `
+                                                <div class="tags-row">
+                                                    ${item.tags.map(t => `<span class="tag-capsule">🛒 ${t}</span>`).join('')}
+                                                </div>
+                                            ` : ""}
 
-                                        ${item.deals ? item.deals.map(d => `<div class="item-note box-deal">🉐 ${d.b}：${d.d}</div>`).join('') : ""}
-                                        ${item.card_tip ? `<div class="item-note box-card-tip"><i class="ti ti-credit-card"></i> ${item.card_tip}</div>` : ""}
-                                        
-                                        ${(function() {
-                                            var cameraShops = getNearbyCameraShops(item.a, item.n);
-                                            if (cameraShops.length > 0) {
-                                                return `
-                                                    <div class="item-note box-camera">
-                                                        <strong>📸 搜尋到周邊精選中古/相機名店：</strong>
-                                                        ${cameraShops.map(c => `
-                                                            <div style="margin-top:6px; font-size:0.82rem;">
-                                                                • <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.q)}" target="_blank">${c.n}</a><br>
-                                                                <span style="color:#666; font-weight:400;">${c.d}</span>
-                                                            </div>
-                                                        `).join('')}
-                                                    </div>
-                                                `;
-                                            }
-                                            return "";
-                                        })()}
+                                            ${item.deals ? item.deals.map(d => `<div class="item-note box-deal">🉐 ${d.b}：${d.d}</div>`).join('') : ""}
+                                            ${item.card_tip ? `<div class="item-note box-card-tip"><i class="ti ti-credit-card"></i> ${item.card_tip}</div>` : ""}
+                                            
+                                            ${(function() {
+                                                var cameraShops = getNearbyCameraShops(item.a, item.n);
+                                                if (cameraShops.length > 0) {
+                                                    return `
+                                                        <div class="item-note box-camera">
+                                                            <strong>📸 搜尋到周邊精選中古/相機名店：</strong>
+                                                            ${cameraShops.map(c => `
+                                                                <div style="margin-top:6px; font-size:0.82rem;">
+                                                                    • <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.q)}" target="_blank">${c.n}</a><br>
+                                                                    <span style="color:#666; font-weight:400;">${c.d}</span>
+                                                                </div>
+                                                            `).join('')}
+                                                        </div>
+                                                    `;
+                                                }
+                                                return "";
+                                            })()}
+                                        </div>
                                     </div>
                                     <div class="card-actions">
-                                        <button class="action-btn" onclick="openEditModal(${dayIdx}, ${sIdx}, ${iIdx})"><i class="ti ti-edit"></i></button>
-                                        <a class="action-btn" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.q || item.n)}" target="_blank"><i class="ti ti-map-2"></i></a>
+                                        <button class="action-btn" onclick="openEditModal(${dayIdx}, ${sIdx}, ${iIdx})"><i class="ti ti-edit"></i> 編輯</button>
+                                        <a class="action-btn" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.q || item.n)}" target="_blank"><i class="ti ti-map-2"></i> 地圖</a>
                                     </div>
                                 </div>
                                 ${generateTransitBlock(item, allFlatItems[flatIdx + 1])}
@@ -903,25 +1057,29 @@
                             </div>
                             
                             <div class="shop-calc-box">
-                                <div class="shop-calc-field">
-                                    <label>日本售價 (日幣 JPY)</label>
-                                    <input type="number" value="${jpyVal || ''}" placeholder="輸入日幣金額" oninput="inlineCalcShop(${index}, 'jpy', this.value)">
+                                <div class="shop-calc-inputs">
+                                    <div class="shop-calc-field">
+                                        <label>日本售價 (JPY)</label>
+                                        <input type="number" value="${jpyVal || ''}" placeholder="日幣金額" oninput="inlineCalcShop(${index}, 'jpy', this.value)">
+                                    </div>
+                                    <div class="shop-calc-field">
+                                        <label>台灣售價 (TWD)</label>
+                                        <input type="number" value="${twdVal || ''}" placeholder="台幣金額" oninput="inlineCalcShop(${index}, 'twd', this.value)">
+                                    </div>
                                 </div>
-                                <div class="shop-calc-field">
-                                    <label>台灣售價 (台幣 TWD)</label>
-                                    <input type="number" value="${twdVal || ''}" placeholder="輸入台灣台幣" oninput="inlineCalcShop(${index}, 'twd', this.value)">
-                                </div>
-                                <div class="shop-calc-result">
-                                    <span>💴 折合台幣：<strong id="inline-jpy-twd-${index}">$${jpyToTwd.toLocaleString()}</strong></span>
-                                </div>
-                                <div class="shop-calc-result" style="justify-content: flex-end;">
-                                    <span>🔥 即時價差：<strong id="inline-diff-${index}" class="${diffClass}">${diffText}</strong></span>
+                                <div class="shop-calc-results">
+                                    <div class="shop-calc-result">
+                                        <span>💴 折合台幣</span><strong id="inline-jpy-twd-${index}">$${jpyToTwd.toLocaleString()}</strong>
+                                    </div>
+                                    <div class="shop-calc-result">
+                                        <span>🔥 即時價差</span><strong id="inline-diff-${index}" class="${diffClass}">${diffText}</strong>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="shop-actions">
-                                <button class="shop-action-btn" onclick="openShopModal(${index})"><i class="ti ti-edit"></i></button>
-                                <button class="shop-action-btn btn-delete" onclick="deleteShopItem(${index})"><i class="ti ti-trash"></i></button>
+                                <button class="shop-action-btn" onclick="openShopModal(${index})"><i class="ti ti-edit"></i> 編輯</button>
+                                <button class="shop-action-btn btn-delete" onclick="deleteShopItem(${index})"><i class="ti ti-trash"></i> 刪除</button>
                             </div>
                         </div>
                     `;
