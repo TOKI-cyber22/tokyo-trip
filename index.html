@@ -490,9 +490,7 @@
         ];
 
 // 如果瀏覽器有存檔，就用存檔；沒有才用原始資料
-var savedData = localStorage.getItem('tokyo_trip_data');
-if (savedData) { initialDaysData = JSON.parse(savedData); }
-        var initialDaysData = [
+var initialDaysData = [
             {tab:"7/21 二",title:"7/21（週二）",sub:"凌晨4點羽田落地 → 押上放行李 → 淺草・人形町・銀座・有樂町", secs:[
                 {l:"早上",items:[
                     {t:"08:00",n:"MISOJYU（早餐）",type:"eat",a:"淺草／淺草站",h:"08:00–15:30",q:"Misojyu Asakusa Tokyo",tr:"吃飽後 🚶 步行 10 分鐘"},
@@ -603,7 +601,15 @@ if (savedData) { initialDaysData = JSON.parse(savedData); }
             ], res:[{d:"玉ひ為：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現場11:15前排隊，現金only"}] }
         ];
 
-        var defaultShoppingList = [
+        
+
+        // 載入已儲存資料
+        var savedData = localStorage.getItem('tokyo_trip_data');
+        if (savedData) {
+            try { initialDaysData = JSON.parse(savedData); } catch(e) { console.error(e); }
+        }
+
+var defaultShoppingList = [
             { t: "理光 RICOH GR3 機身", lang: "RICOH GR III", d: "新宿西口 Yodobashi、Map Camera、優先刷熊本熊卡賺 7.5%", jpy: 130000, twd: 34400, checked: false },
             { t: "黛珂完美校色遮瑕盤", lang: "コスメデコルテ トーンパーフェクティング パレット", d: "新宿伊勢丹、實拿 8.45% 稅、搭配 5% Guest卡", jpy: 4950, twd: 1200, checked: false },
             { t: "Rosy Rosa 彩妝工具", lang: "ロージーローザ", d: "@cosme TOKYO、免手續費實退 10%、刷玩旅卡 3.3%", jpy: 700, twd: 250, checked: false },
