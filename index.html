@@ -461,7 +461,8 @@
             </div>
         </div>
     </div>
-
+    
+    function saveToStorage() { localStorage.setItem('tokyo_trip_data', JSON.stringify(initialDaysData)); }
     <script>
         var CARD_STRATEGY = {
             bear_yodobashi: "【優先刷這張】玉山熊本熊卡：日本特定通路享免手續費 + 1% + 加碼 5% ＝ 最高 7.5% 回饋！（加碼上限刷台幣 1 萬，爆額改刷台新玩旅）",
@@ -488,6 +489,9 @@
             { n: "NEWoMan 新宿", fee: "1.55%", rate: "實退 8.45%", coupon: "無常態折價券", note: "行程 Day 6 購物點。精緻高質感輕奢包袋品牌集結地，需持收據統一至 2F 免稅櫃台辦理，扣除 1.55% 服務費。" }
         ];
 
+// 如果瀏覽器有存檔，就用存檔；沒有才用原始資料
+var savedData = localStorage.getItem('tokyo_trip_data');
+if (savedData) { initialDaysData = JSON.parse(savedData); }
         var initialDaysData = [
             {tab:"7/21 二",title:"7/21（週二）",sub:"凌晨4點羽田落地 → 押上放行李 → 淺草・人形町・銀座・有樂町", secs:[
                 {l:"早上",items:[
@@ -1276,6 +1280,7 @@
                     // 4. 將排列重新分配好的乾淨資料倒回主資料庫，並觸發畫面刷新
                     dayData.secs = newSecs;
                     renderPanel();
+              saveToStorage();
                 }
             });
         }
