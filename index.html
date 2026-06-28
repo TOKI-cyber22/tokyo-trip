@@ -245,9 +245,7 @@
         .shop-item input[type="checkbox"] { width: 22px; height: 22px; border-radius: 6px; accent-color: var(--text-dark); cursor: pointer; flex-shrink: 0; margin-top: 2px; }
         .shop-item-text { flex-grow: 1; font-size: 0.98rem; font-weight: 600; padding-right: 75px; word-break: break-all; }
         .shop-item.checked .shop-item-text { text-decoration: line-through; color: var(--text-muted); opacity: 0.6; }
-        .shop-item-desc { font-size: 0.82rem; color: var(--text-muted); font-weight: 400; margin-top: 2px; line-height: 1.4; }
         
-        /* 💸 新增：極致進化的即時換算小區塊 💸 */
         .shop-calc-box {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -350,7 +348,7 @@
             </div>
             <div class="form-group">
                 <label>📍 地點 / 位置說明</label>
-                <input type="text" id="modal-addr" placeholder="例如：押上／晴空塔商場">
+                <input type="text" id="modal-addr" placeholder="max：押上／晴空塔商場">
             </div>
             <div class="form-group">
                 <label>🏷️ 必逛商家標籤（多項請用逗號隔開）</label>
@@ -367,18 +365,22 @@
         </div>
     </div>
 
-    <!-- 🌟 購物清單獨立表單彈窗（全面支援數值設定） -->
+    <!-- 🌟 購物清單獨立表單彈窗（已追加日語/英語欄位） -->
     <div id="shop-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h3 id="shop-modal-title"><i class="ti ti-shopping-cart"></i> 新增購物項目</h3>
             <input type="hidden" id="shop-edit-index" value="">
             <div class="form-group">
-                <label>🛍️ 想要購入的物品名稱</label>
+                <label>🛍️ 想要購入的物品名稱 (繁中)</label>
                 <input type="text" id="shop-modal-title-input" placeholder="例如：藍標風衣 / 黛珂保養品">
             </div>
             <div class="form-group">
-                <label>📝 備註資訊 / 刷卡攻略戰術</label>
-                <input type="text" id="shop-modal-desc-input" placeholder="例如：新宿伊勢丹購入，刷台新玩旅卡">
+                <label>🌐 日語 / 英語對照名稱 (小字顯示)</label>
+                <input type="text" id="shop-modal-lang-input" placeholder="例如：RICOH GR III / コスメデコルテ">
+            </div>
+            <div class="form-group">
+                <label>📝 備註資訊 / 戰術標籤（輸入頓號、逗號自動變框框）</label>
+                <input type="text" id="shop-modal-desc-input" placeholder="例如：新宿伊勢丹購入、搭配5%卡、刷玩旅卡">
             </div>
             <div class="form-group">
                 <label>💴 日本售價 (日幣 JPY)</label>
@@ -487,7 +489,7 @@
                     {t:"17:00",n:"Uohide夜間場晚餐",type:"eat",a:"澀谷站",h:"夜17:00–22:30",w:"17:00開門即入",q:"Uohide Shibuya Sakuragaoka Tokyo",tr:"🚶 步行約 5 分鐘"},
                     {t:"18:30",n:"澀谷109逛街",type:"shop",a:"澀谷站",h:"10:00–21:00",q:"Shibuya 109 Tokyo",tags:["新潮日系拍貼機專區","辣妹潮流服飾"],deals:[{b:"109 商場退稅",d:"持發票與商品前往 4F 免稅櫃台辦理統一退稅。"}],card_tip: CARD_STRATEGY.taishin_unlimited, tr:"🚶 步行約 5 分鐘"},
                     {t:"",n:"澀谷PARCO逛街",type:"shop",a:"澀谷站",h:"11:00–21:00",q:"Shibuya Parco Tokyo",tags:["日系潮流設計師品牌區"],aeta:["STUDIOUS（澀谷PARCO店 3F）"],deals:[{b:"PARCO 退稅",d:"各專櫃現場直接退 10% 稅（0手續費）。"}],card_tip: CARD_STRATEGY.taishin_unlimited, tr:"🚶 步行即達旁棟大樓"},
-                    {t:"",n:"Mandarake Shibuya",type:"shop",a:"澀谷BEAM大樓 B2F",h:"12:00–20:00",w:"位於澀谷BEAM大樓B2F，19:30前出",q:"Mandarake Shibuya Tokyo",tags:["Keroro二手"],tr:"🚶 步行即達"},
+                    {t:"",n:"Mandarake Shibuya",type:"shop",a:"澀谷BEAM大樓 B2F",h:"12:00–20:00",w:"位於澀谷BEAM大樓B2F，19:30前出",q:"Mandarake Shibuya Tokyo",tags:["Keroro二手"],tr:"🚶 步行約 5 分鐘"},
                     {t:"",n:"VILLAGE VANGUARD",type:"shop",a:"澀谷宇田川町 B1F",h:"11:00–21:00",q:"Village Vanguard Shibuya Tokyo",tags:["Keroro雜貨"],tr:"搭乘小田急線 🚇 約 5 分鐘"},
                     {t:"21:30",n:"ろばた代々木八幡（宵夜）",type:"eat",a:"代々木八幡站",h:"17:00–23:00",q:"産直市場 ろばた 渋谷代々木八幡店"}
                 ]}
@@ -567,37 +569,37 @@
             ], res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現場11:15前排隊，現金only"}] }
         ];
 
-        // 🌟 核心數據優化：賦予物件純數值屬性，便於網頁即時動態連動
+        // 🌟 核心數據升級：追加 lang (對照名) 屬性，且將備註 d 改用頓號分隔以利小框框並排渲染
         var defaultShoppingList = [
-            { t: "理光 RICOH GR3 機身", d: "新宿西口 Yodobashi / Map Camera（1 萬台幣內刷熊本熊卡賺 7.5%，其餘改玩旅）", jpy: 130000, twd: 34400, checked: false },
-            { t: "黛珂完美校色遮瑕盤", d: "新宿伊勢丹（實拿 8.45% 稅，搭配 5% Guest卡疊加戰術超賺）", jpy: 4950, twd: 1200, checked: false },
-            { t: "Rosy Rosa 彩妝工具", d: "@cosme TOKYO 原宿店（免手續費實退 10%，刷台新玩旅卡 3.3% 無上限）", jpy: 700, twd: 250, checked: false },
-            { t: "Chacott 蜜粉與芭蕾用品", d: "表參道旗煙店（獨立退稅免手續費拿滿 10%，主刷台新玩旅卡）", jpy: 2200, twd: 750, checked: false },
-            { t: "Mont-bell 經典拖鞋 (Sock-On)", d: "新宿 Yodobashi Camera（確認免稅配合，1 萬台幣內優先刷熊本熊卡拿加碼）", jpy: 3520, twd: 1180, checked: false },
-            { t: "Aeta 皮革包袋", d: "Cibone 青山店 或 NEWoMan / Lumine專選店", jpy: 45000, twd: 13500, checked: false },
-            { t: "CITEN 服飾配件", d: "晴空塔 (3F) 或 Lumine 2 (4F)（主刷台新玩旅卡）", jpy: 4500, twd: 1450, checked: false },
-            { t: "Keroro 軍曹周邊商品", d: "橫濱、原宿 Kiddy Land、池袋太陽城（滿額店家可直接退稅）", jpy: 2000, twd: 600, checked: false }
+            { t: "理光 RICOH GR3 機身", lang: "RICOH GR III", d: "新宿西口 Yodobashi、Map Camera、優先刷熊本熊卡賺 7.5%", jpy: 130000, twd: 34400, checked: false },
+            { t: "黛珂完美校色遮瑕盤", lang: "コスメデコルテ トーンパーフェクティング パレット", d: "新宿伊勢丹、實拿 8.45% 稅、搭配 5% Guest卡", jpy: 4950, twd: 1200, checked: false },
+            { t: "Rosy Rosa 彩妝工具", lang: "ロージーローザ", d: "@cosme TOKYO、免手續費實退 10%、刷玩旅卡 3.3%", jpy: 700, twd: 250, checked: false },
+            { t: "Chacott 蜜粉與芭蕾用品", lang: "チャコット コスメティクス", d: "表參道旗艦店、獨立退稅、完整退 10%、主刷玩旅卡", jpy: 2200, twd: 750, checked: false },
+            { t: "Mont-bell 經典拖鞋", lang: "モンベル Sock-On Sandals", d: "新宿西口、確認免稅、優先刷熊本熊卡", jpy: 3520, twd: 1180, checked: false },
+            { t: "Aeta 皮革包袋", lang: "アエタ LEATHER BASKET", d: "Cibone 青山店、NEWoMan專選店、高質感精品", jpy: 45000, twd: 13500, checked: false },
+            { t: "CITEN 服飾配件", lang: "シテン 公式通販", d: "晴空塔 3F、Lumine 2 4F、主刷台新玩旅卡", jpy: 4500, twd: 1450, checked: false },
+            { t: "Keroro 軍曹周邊商品", lang: "ケロロ軍曹 グッズ", d: "橫濱、原宿 Kiddy Land、池袋太陽城、滿額直接免稅", jpy: 2000, twd: 600, checked: false }
         ];
 
-        // 🌟 記帳本初始明細 (預先開好每一天的陣列)
+        // 記帳本初始明細
         var defaultExpenses = { "0":[], "1":[], "2":[], "3":[], "4":[], "5":[], "6":[] };
 
-        // --- ⚙️ 自動尋找附近相機名店機制 ---
+        // 尋找附近相機名店機制
         function getNearbyCameraShops(addressStr, nameStr) {
             var fullTxt = (addressStr + " " + nameStr).toLowerCase();
             var shops = [];
             if (fullTxt.includes("新宿")) {
-                shops.push({ n: "Map Camera 新宿 (西口)", d: "🔥 全東京二手/新品 GR 系列大本營！機況透明，免稅 10%", q: "Map Camera Shinjuku" });
-                shops.push({ n: "北村相機 新宿旗艦店 (東口)", d: "✨ 7層樓相機聖地！中古 GR 轉手極快，大推 2-4F 中古樓層", q: "Shinjuku Kitamura Camera" });
-                shops.push({ n: "Yodobashi 新宿西口相機館", d: "📦 傳統量販龍頭，可直接現場向店員詢問是否有隱藏全新品庫存", q: "Yodobashi Camera Shinjuku Nishiguchi Camera Palace" });
+                shops.push({ n: "Map Camera 新宿 (西口)", d: "🔥 全二手/新品 GR 大本營！機況透明，免稅 10%", q: "Map Camera Shinjuku" });
+                shops.push({ n: "北村相機 新宿旗艦店 (東口)", d: "✨ 7層樓相機聖地！大推 2-4F 中古相機樓層", q: "Shinjuku Kitamura Camera" });
+                shops.push({ n: "Yodobashi 新宿西口相機館", d: "📦 傳統量販龍頭，可直接現場向店員詢問隱藏全新品庫存", q: "Yodobashi Camera Shinjuku Nishiguchi Camera Palace" });
             } else if (fullTxt.includes("銀座") || fullTxt.includes("有樂町")) {
-                shops.push({ n: "Bic Camera 有樂町店", d: "🏬 擁有超齊全的全新數碼設備展示櫃，可詢問全新品退稅", q: "Bic Camera Yurakucho" });
-                shops.push({ n: "Lemon 社 銀座店", d: "🍋 隱身大樓內的極致中古名店，常常藏有稀有的 GR 系列配件或機身", q: "Lemon Sha Ginza" });
+                shops.push({ n: "Bic Camera 有樂町店", d: "🏬 擁有超齊全的全新設備展示櫃，可詢問全新品退稅", q: "Bic Camera Yurakucho" });
+                shops.push({ n: "Lemon 社 銀座店", d: "🍋 隱身大樓內的極致中古名店，常常藏有稀有配件", q: "Lemon Sha Ginza" });
             }
             return shops;
         }
 
-        // --- ⚙️ 系統初始化與分頁渲染流程 ---
+        // 系統初始化與分頁渲染流程
         window.addEventListener('DOMContentLoaded', function() {
             renderTabs();
             switchTab("day_0");
@@ -707,12 +709,12 @@
                 return;
             }
 
-            // 2. 🌟 進化版購物清單渲染 (支援數值、即時公式換算與修改)
+            // 2. 🌟 購物清單 (已追加日語/英語欄位小字，以及備註自動切膠囊標籤功能)
             if (currentActiveTab === "shop") {
                 var html = `
                     <div class="section-label"><i class="ti ti-shopping-cart"></i> 旅日血拼即時換算清單 (固定匯率 0.2)</div>
                     <div style="padding: 0 16px 12px 16px;">
-                        <button class="btn-add-expense" style="background:#var(--text-dark); background-color:#1a1d20; color:white; border:none;" onclick="openShopModal()"><i class="ti ti-plus"></i> 新增自訂購物項目</button>
+                        <button class="btn-add-expense" style="background-color:#1a1d20; color:white; border:none;" onclick="openShopModal()"><i class="ti ti-plus"></i> 新增自訂購物項目</button>
                     </div>
                     <div class="shop-list-container">
                 `;
@@ -720,10 +722,7 @@
                 defaultShoppingList.forEach(function(item, index) {
                     var jpyVal = parseFloat(item.jpy) || 0;
                     var twdVal = parseFloat(item.twd) || 0;
-                    
-                    // 公式：日本折合台幣 = 日幣 * 0.2
                     var jpyToTwd = Math.round(jpyVal * 0.2);
-                    // 公式：即時價差 = 台灣售價 - 日本折合台幣
                     var diff = twdVal - jpyToTwd;
                     
                     var diffText = "$0";
@@ -736,17 +735,35 @@
                         diffClass = "loss-text";
                     }
 
+                    // 💥 頓號、逗號自動拆解為膠囊小框框邏輯
+                    var descHtml = "";
+                    if (item.d) {
+                        // 使用正則拆分：支援 頓號、全形逗號、半形逗號
+                        var noteTags = item.d.split(/[、，,]/).map(t => t.trim()).filter(t => t.length > 0);
+                        if (noteTags.length > 0) {
+                            descHtml = `
+                                <div class="tags-row" style="margin-top: 6px;">
+                                    ${noteTags.map(tag => `<span class="tag-capsule" style="background-color: #f3f4f6; color: #4b5563; border-color: #e5e7eb;">📍 ${tag}</span>`).join('')}
+                                </div>
+                            `;
+                        }
+                    }
+
                     html += `
                         <div class="shop-item ${item.checked ? 'checked' : ''}" id="shop-item-${index}">
                             <div class="shop-item-header">
                                 <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleShopItem(${index}, this.checked)">
                                 <div class="shop-item-text">
-                                    ${item.t}
-                                    <div class="shop-item-desc">${item.d}</div>
+                                    <div style="font-size:1.02rem; font-weight:700; color:var(--text-dark);">${item.t}</div>
+                                    
+                                    <!-- 💥 高質感小字外語欄位（完美不搶戲） -->
+                                    ${item.lang ? `<div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 400; margin-top: 2px; line-height: 1.2;">${item.lang}</div>` : ""}
+                                    
+                                    <!-- 💥 自動生成的並排膠囊備註標籤 -->
+                                    ${descHtml}
                                 </div>
                             </div>
                             
-                            <!-- ⚙️ 直接在卡片打字，系統直接自動換算 -->
                             <div class="shop-calc-box">
                                 <div class="shop-calc-field">
                                     <label>日本售價 (日幣 JPY)</label>
@@ -871,23 +888,20 @@
             }
         }
 
-        // --- 🌟 購物清單高階即時內聯計算邏輯 ---
+        // 購物清單即時內聯計算邏輯
         function inlineCalcShop(index, field, value) {
             var item = defaultShoppingList[index];
             if (!item) return;
 
-            // 即時捕捉更新數據
             if (field === 'jpy') item.jpy = parseFloat(value) || 0;
             if (field === 'twd') item.twd = parseFloat(value) || 0;
 
             var jpyVal = item.jpy;
             var twdVal = item.twd;
 
-            // 計算公式
             var jpyToTwd = Math.round(jpyVal * 0.2);
             var diff = twdVal - jpyToTwd;
 
-            // DOM 即時操作，免重新渲染避免鍵盤縮回
             var jpyTwdText = document.getElementById(`inline-jpy-twd-${index}`);
             var diffText = document.getElementById(`inline-diff-${index}`);
 
@@ -923,7 +937,7 @@
             }
         }
 
-        // 購物彈窗開關控制
+        // 購物彈窗開關控制 (已同步加入對照語言名稱欄位)
         function openShopModal(index = null) {
             var modal = document.getElementById('shop-modal');
             var titleEl = document.getElementById('shop-modal-title');
@@ -934,6 +948,7 @@
                 titleEl.innerHTML = `<i class="ti ti-edit"></i> 編輯購物項目`;
                 idxInput.value = index;
                 document.getElementById('shop-modal-title-input').value = item.t;
+                document.getElementById('shop-modal-lang-input').value = item.lang || "";
                 document.getElementById('shop-modal-desc-input').value = item.d;
                 document.getElementById('shop-modal-jpy-input').value = item.jpy || "";
                 document.getElementById('shop-modal-twd-input').value = item.twd || "";
@@ -941,6 +956,7 @@
                 titleEl.innerHTML = `<i class="ti ti-shopping-cart"></i> 新增購物項目`;
                 idxInput.value = "";
                 document.getElementById('shop-modal-title-input').value = "";
+                document.getElementById('shop-modal-lang-input').value = "";
                 document.getElementById('shop-modal-desc-input').value = "";
                 document.getElementById('shop-modal-jpy-input').value = "";
                 document.getElementById('shop-modal-twd-input').value = "";
@@ -955,23 +971,25 @@
         function saveShopModalData() {
             var idx = document.getElementById('shop-edit-index').value;
             var tStr = document.getElementById('shop-modal-title-input').value.trim() || "未命名商品";
-            var dStr = document.getElementById('shop-modal-desc-input').value.trim() || "無描述備註";
+            var langStr = document.getElementById('shop-modal-lang-input').value.trim() || "";
+            var dStr = document.getElementById('shop-modal-desc-input').value.trim() || "";
             var jpyNum = parseFloat(document.getElementById('shop-modal-jpy-input').value) || 0;
             var twdNum = parseFloat(document.getElementById('shop-modal-twd-input').value) || 0;
 
             if (idx !== "") {
                 defaultShoppingList[idx].t = tStr;
+                defaultShoppingList[idx].lang = langStr;
                 defaultShoppingList[idx].d = dStr;
                 defaultShoppingList[idx].jpy = jpyNum;
                 defaultShoppingList[idx].twd = twdNum;
             } else {
-                defaultShoppingList.push({ t: tStr, d: dStr, jpy: jpyNum, twd: twdNum, checked: false });
+                defaultShoppingList.push({ t: tStr, lang: langStr, d: dStr, jpy: jpyNum, twd: twdNum, checked: false });
             }
             closeShopModal();
             renderPanel();
         }
 
-        // --- 🌟 行程主表單編輯視窗核心邏輯 ---
+        // 行程主表單編輯視窗核心邏輯
         function openEditModal(dayIdx, sIdx, iIdx) {
             currentEditCoords = { d: dayIdx, s: sIdx, i: iIdx };
             var item = initialDaysData[dayIdx].secs[sIdx].items[iIdx];
@@ -1014,7 +1032,7 @@
             renderPanel();
         }
 
-        // --- 🌟 記帳本資料儲存與控制邏輯 ---
+        // 記帳本資料儲存與控制邏輯
         function openAccountModal(dayIndex) {
             document.getElementById('account-day-index').value = dayIndex;
             document.getElementById('account-modal-name').value = "";
@@ -1047,7 +1065,7 @@
             }
         }
 
-        // --- 🌟 導入拖曳核心控制引擎 SortableJS ---
+        // 導入拖曳核心控制引擎 SortableJS
         function initSortable() {
             var el = document.getElementById('drag-timeline-box');
             if (!el) return;
