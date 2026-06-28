@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>東京自主遊隨身手冊 🗼</title>
     
-    <!-- 引入高質感 Tabler Icons 圖示庫 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     
-    <!-- 引入強大且支援手機觸控的拖曳庫 SortableJS -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
     
     <style>
@@ -349,8 +347,8 @@
         .modal-content h3 { margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 6px; }
         .form-group { display: flex; flex-direction: column; gap: 6px; }
         .form-group label { font-size: 0.85rem; font-weight: 700; color: #4b5563; }
-        .form-group input, .form-group textarea { padding: 11px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.92rem; outline: none; font-family: inherit; }
-        .form-group input:focus, .form-group textarea:focus { border-color: var(--text-dark); }
+        .form-group input, .form-group textarea, .form-group select { padding: 11px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.92rem; outline: none; font-family: inherit; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--text-dark); }
         .modal-actions { display: flex; gap: 10px; margin-top: 8px; }
         .modal-btn { flex: 1; padding: 12px; border-radius: 8px; border: none; font-size: 0.92rem; font-weight: 600; cursor: pointer; }
         .btn-cancel { background: #f1f3f5; color: var(--text-dark); }
@@ -421,10 +419,28 @@
     <div class="tabs-container" id="tabs-bar"></div>
     <div id="main-panel"></div>
 
-    <!-- 行程主表單編輯彈窗 -->
     <div id="edit-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
-            <h3><i class="ti ti-edit"></i> 編輯行程詳細資訊</h3>
+            <h3 id="edit-modal-title"><i class="ti ti-edit"></i> 編輯行程詳細資訊</h3>
+            <input type="hidden" id="edit-modal-mode" value="edit">
+            <input type="hidden" id="edit-modal-day" value="">
+            
+            <div class="form-group">
+                <label>🏷️ 行程類型</label>
+                <select id="modal-type">
+                    <option value="spot">景點 (預設)</option>
+                    <option value="eat">正餐</option>
+                    <option value="sweet">甜點</option>
+                    <option value="shop">購物</option>
+                    <option value="event">祭典/活動</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="modal-sec-group" style="display:none;">
+                <label>⏱️ 加入時段</label>
+                <select id="modal-sec-select"></select>
+            </div>
+
             <div class="form-group">
                 <label>⏰ 行程時間</label>
                 <input type="text" id="modal-time" placeholder="例如：09:00">
@@ -438,6 +454,10 @@
                 <input type="text" id="modal-addr" placeholder="例如：押上／晴空塔商場">
             </div>
             <div class="form-group">
+                <label>🗺️ 地圖搜尋關鍵字 (修改地點時請一併修改)</label>
+                <input type="text" id="modal-q" placeholder="例如：Tokyo Solamachi Oshiage">
+            </div>
+            <div class="form-group">
                 <label>🏷️ 必逛商家標籤（多項請用逗號隔開）</label>
                 <input type="text" id="modal-tags" placeholder="例如：Citen (3F), 寶可夢中心">
             </div>
@@ -447,12 +467,11 @@
             </div>
             <div class="modal-actions">
                 <button class="modal-btn btn-cancel" onclick="closeEditModal()">取消</button>
-                <button class="modal-btn btn-save" onclick="saveEditModalData()">儲存修改</button>
+                <button class="modal-btn btn-save" onclick="saveEditModalData()">儲存</button>
             </div>
         </div>
     </div>
 
-    <!-- 購物清單獨立表單彈窗 -->
     <div id="shop-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h3 id="shop-modal-title"><i class="ti ti-shopping-cart"></i> 新增購物項目</h3>
@@ -484,7 +503,6 @@
         </div>
     </div>
 
-    <!-- 記帳本明細專用輸入彈窗 -->
     <div id="account-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h3><i class="ti ti-cash-banknote"></i> 新增實際消費紀錄</h3>
@@ -508,7 +526,6 @@
         </div>
     </div>
 
-    <!-- 💾 資料備份與跨裝置傳輸彈窗 -->
     <div id="backup-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h3><i class="ti ti-file-export"></i> 資料備份與跨裝置傳輸</h3>
@@ -546,16 +563,6 @@
         var currentActiveTab = "day_0"; 
         var currentEditCoords = null; 
 
-        // ============================================================
-        // 💾 本機自動存檔機制（localStorage）
-        // ------------------------------------------------------------
-        // 拖曳排序、編輯行程、勾選購物清單、記帳等操作，都會即時存進
-        // 這個瀏覽器的 localStorage。下次用同一個瀏覽器打開這個檔案，
-        // 會自動讀回上次的進度。
-        // 注意：存檔僅存在「這個瀏覽器」裡，換瀏覽器、換裝置、清除
-        // 瀏覽資料都不會同步。如果需要跨裝置同步，請用上方標頭的
-        // 「匯出／匯入」功能，把資料打包成檔案手動搬到別的裝置。
-        // ============================================================
         var STORAGE_KEY = "tokyo_trip_handbook_v1";
 
         function saveAppState() {
@@ -596,13 +603,6 @@
             }
         }
 
-        // ============================================================
-        // 💾 資料備份與跨裝置傳輸（匯出／匯入 JSON 檔案）
-        // ------------------------------------------------------------
-        // 不接任何雲端服務，純粹把目前資料打包成一個 .json 檔案下載，
-        // 自己用 LINE / Email / 雲端硬碟等方式傳到另一台裝置，
-        // 再用「匯入」把該檔案讀回來、覆蓋目前的資料，達成跨裝置同步。
-        // ============================================================
         function openBackupModal() {
             var statusEl = document.getElementById('backup-status-text');
             if (statusEl) statusEl.textContent = "";
@@ -680,7 +680,6 @@
             };
             reader.readAsText(file);
         }
-        
         
         var MASTER_TAX_DATA = [
             { n: "Bic Camera (必買電器旗艦)", fee: "0%", rate: "10% 全退", coupon: "10%免稅 + 7%電器折價券 / 5%藥妝券", note: "結帳臨櫃直接扣除免稅額，不囉唆零手續費！疊加 7% 折價券現折 17%，買電器、玩具及遊戲機神店。", rank: 1 },
@@ -822,9 +821,6 @@
 
         var defaultExpenses = { "0":[], "1":[], "2":[], "3":[], "4":[], "5":[], "6":[] };
 
-        // 🎯 建立「原始相鄰配對」的交通備註查詢表
-        // 掃描初始資料中每一組「現在站→下一站」的 tr 備註，存成查詢表
-        // 之後不管怎麼拖曳，只要這兩個地點重新相鄰，就能找回你原本寫好的詳細交通註記
         var TRANSIT_TR_MAP = {};
         initialDaysData.forEach(function(day) {
             var flat = [];
@@ -837,10 +833,6 @@
             }
         });
 
-        // 🎯 動態產生交通區塊：永遠抓「目前卡片」與「畫面上真正的下一張卡片」的地址/店名
-        // 1. 若這兩個地點曾經相鄰過（查得到原本寫的詳細備註），就沿用你研究好的內容
-        // 2. 若是拖曳後產生的全新組合，就用兩邊的地址動態生成文字描述
-        // 3. 改以純文字描述交通方式，並提供「完整地圖」連結點開查看，不再內嵌地圖縮圖
         function generateTransitBlock(currentItem, nextItem) {
             if (!currentItem || !nextItem) return "";
 
@@ -938,8 +930,6 @@
 
                 html += `<div class="timeline-container" id="drag-timeline-box">`;
                 
-                // 💥 重要優化：導入扁平化索引計數器，確保拖曳重組時能精準抓到對應資料
-                // 同時建立完整扁平陣列，讓交通區塊永遠能找到「畫面上真正的下一筆行程」
                 var allFlatItems = [];
                 data.secs.forEach(function(sec) { sec.items.forEach(function(it) { allFlatItems.push(it); }); });
 
@@ -992,7 +982,8 @@
                                     </div>
                                     <div class="card-actions">
                                         <button class="action-btn" onclick="openEditModal(${dayIdx}, ${sIdx}, ${iIdx})"><i class="ti ti-edit"></i> 編輯</button>
-                                        <a class="action-btn" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.q || item.n)}" target="_blank"><i class="ti ti-map-2"></i> 地圖</a>
+                                        <a class="action-btn" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.q || item.a || item.n)}" target="_blank"><i class="ti ti-map-2"></i> 地圖</a>
+                                        <button class="action-btn btn-delete" style="flex: 0.4; color: #e05353; background-color: #fff5f5; border-color: #fee2e2;" onclick="deleteItineraryItem(${dayIdx}, ${sIdx}, ${iIdx})"><i class="ti ti-trash"></i></button>
                                     </div>
                                 </div>
                                 ${generateTransitBlock(item, allFlatItems[flatIdx + 1])}
@@ -1002,7 +993,11 @@
                     });
                 });
                 
-                html += `</div>`;
+                html += `</div>
+                    <div style="padding: 0 16px 24px 16px;">
+                        <button class="btn-add-expense" style="background-color:#1a1d20; color:white; border:none;" onclick="openAddItineraryModal(${dayIdx})"><i class="ti ti-plus"></i> 新增行程至本日</button>
+                    </div>
+                `;
                 panel.innerHTML = html;
                 initSortable();
                 return;
@@ -1182,6 +1177,108 @@
             }
         }
 
+        // 新增/編輯 行程功能相關函式
+        function deleteItineraryItem(dayIdx, sIdx, iIdx) {
+            if(confirm("確定要刪除這個行程嗎？")) {
+                initialDaysData[dayIdx].secs[sIdx].items.splice(iIdx, 1);
+                saveAppState();
+                renderPanel();
+            }
+        }
+
+        function openAddItineraryModal(dayIdx) {
+            document.getElementById('edit-modal-mode').value = "add";
+            document.getElementById('edit-modal-day').value = dayIdx;
+            document.getElementById('edit-modal-title').innerHTML = `<i class="ti ti-plus"></i> 新增行程`;
+            
+            document.getElementById('modal-time').value = "";
+            document.getElementById('modal-name').value = "";
+            document.getElementById('modal-addr').value = "";
+            document.getElementById('modal-q').value = "";
+            document.getElementById('modal-tags').value = "";
+            document.getElementById('modal-warning').value = "";
+            document.getElementById('modal-type').value = "spot";
+            
+            var secSelect = document.getElementById('modal-sec-select');
+            secSelect.innerHTML = "";
+            initialDaysData[dayIdx].secs.forEach(function(sec, idx) {
+                var opt = document.createElement("option");
+                opt.value = idx;
+                opt.text = sec.l + " 時段";
+                secSelect.appendChild(opt);
+            });
+            document.getElementById('modal-sec-group').style.display = "flex";
+            
+            document.getElementById('edit-modal').style.display = "flex";
+        }
+
+        function openEditModal(dayIdx, sIdx, iIdx) {
+            currentEditCoords = { d: dayIdx, s: sIdx, i: iIdx };
+            document.getElementById('edit-modal-mode').value = "edit";
+            document.getElementById('edit-modal-title').innerHTML = `<i class="ti ti-edit"></i> 編輯行程詳細資訊`;
+            document.getElementById('modal-sec-group').style.display = "none";
+            
+            var item = initialDaysData[dayIdx].secs[sIdx].items[iIdx];
+            
+            document.getElementById('modal-time').value = item.t || "";
+            document.getElementById('modal-name').value = item.n || "";
+            document.getElementById('modal-addr').value = item.a || "";
+            document.getElementById('modal-q').value = item.q || item.a || item.n || "";
+            document.getElementById('modal-tags').value = item.tags ? item.tags.join(', ') : "";
+            document.getElementById('modal-warning').value = item.w || "";
+            document.getElementById('modal-type').value = item.type || "spot";
+            
+            document.getElementById('edit-modal').style.display = "flex";
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').style.display = "none";
+            currentEditCoords = null;
+        }
+
+        function saveEditModalData() {
+            var mode = document.getElementById('edit-modal-mode').value;
+            var tagsVal = document.getElementById('modal-tags').value.trim();
+            var tagsArr = tagsVal ? tagsVal.split(',').map(s => s.trim()).filter(s => s.length > 0) : null;
+            var warnVal = document.getElementById('modal-warning').value.trim();
+            var item;
+
+            if (mode === "edit") {
+                if (!currentEditCoords) return;
+                var coords = currentEditCoords;
+                item = initialDaysData[coords.d].secs[coords.s].items[coords.i];
+                
+                item.t = document.getElementById('modal-time').value.trim();
+                item.n = document.getElementById('modal-name').value.trim();
+                item.a = document.getElementById('modal-addr').value.trim();
+                item.q = document.getElementById('modal-q').value.trim();
+                item.type = document.getElementById('modal-type').value;
+                
+                if (tagsArr) item.tags = tagsArr; else delete item.tags;
+                if (warnVal) item.w = warnVal; else delete item.w;
+            } else if (mode === "add") {
+                var dayIdx = parseInt(document.getElementById('edit-modal-day').value);
+                var sIdx = parseInt(document.getElementById('modal-sec-select').value);
+                
+                item = {
+                    t: document.getElementById('modal-time').value.trim(),
+                    n: document.getElementById('modal-name').value.trim(),
+                    a: document.getElementById('modal-addr').value.trim(),
+                    q: document.getElementById('modal-q').value.trim(),
+                    type: document.getElementById('modal-type').value
+                };
+                if (tagsArr) item.tags = tagsArr;
+                if (warnVal) item.w = warnVal;
+                
+                initialDaysData[dayIdx].secs[sIdx].items.push(item);
+            }
+            
+            closeEditModal();
+            saveAppState();
+            renderPanel();
+        }
+
+        // --- 以下為購物與記帳相關函式 ---
         function inlineCalcShop(index, field, value) {
             var item = defaultShoppingList[index];
             if (!item) return;
@@ -1285,49 +1382,6 @@
             renderPanel();
         }
 
-        function openEditModal(dayIdx, sIdx, iIdx) {
-            currentEditCoords = { d: dayIdx, s: sIdx, i: iIdx };
-            var item = initialDaysData[dayIdx].secs[sIdx].items[iIdx];
-            
-            document.getElementById('modal-time').value = item.t || "";
-            document.getElementById('modal-name').value = item.n || "";
-            document.getElementById('modal-addr').value = item.a || "";
-            document.getElementById('modal-tags').value = item.tags ? item.tags.join(', ') : "";
-            document.getElementById('modal-warning').value = item.w || "";
-            
-            document.getElementById('edit-modal').style.display = "flex";
-        }
-
-        function closeEditModal() {
-            document.getElementById('edit-modal').style.display = "none";
-            currentEditCoords = null;
-        }
-
-        function saveEditModalData() {
-            if (!currentEditCoords) return;
-            var coords = currentEditCoords;
-            var item = initialDaysData[coords.d].secs[coords.s].items[coords.i];
-            
-            item.t = document.getElementById('modal-time').value.trim();
-            item.n = document.getElementById('modal-name').value.trim();
-            item.a = document.getElementById('modal-addr').value.trim();
-            
-            var tagsVal = document.getElementById('modal-tags').value.trim();
-            if (tagsVal) {
-                item.tags = tagsVal.split(',').map(s => s.trim()).filter(s => s.length > 0);
-            } else {
-                delete item.tags;
-            }
-            
-            var warnVal = document.getElementById('modal-warning').value.trim();
-            if (warnVal) item.w = warnVal;
-            else delete item.w;
-            
-            closeEditModal();
-            saveAppState();
-            renderPanel();
-        }
-
         function openAccountModal(dayIndex) {
             document.getElementById('account-day-index').value = dayIndex;
             document.getElementById('account-modal-name').value = "";
@@ -1362,45 +1416,38 @@
             }
         }
 
-        // 💥 強大且修復完畢的拖曳核心控制引擎 SortableJS
         function initSortable() {
             var el = document.getElementById('drag-timeline-box');
             if (!el) return;
             
             Sortable.create(el, {
                 handle: '.drag-handle',
-                draggable: '.timeline-item-wrapper', // 🔒 關鍵修復：限定只能拖曳卡片，防止時段標籤被搞亂
+                draggable: '.timeline-item-wrapper',
                 animation: 200,
                 ghostClass: 'sortable-chosen',
                 onEnd: function (evt) {
                     var dayIdx = parseInt(currentActiveTab.replace("day_", ""));
                     var dayData = initialDaysData[dayIdx];
                     
-                    // 1. 先抓出目前該天「舊順序」的完整扁平資料陣列
                     var originalFlatItems = [];
                     dayData.secs.forEach(sec => {
                         sec.items.forEach(item => { originalFlatItems.push(item); });
                     });
                     
-                    // 2. 準備一組全新的乾淨時段結構
                     var newSecs = dayData.secs.map(sec => ({ l: sec.l, items: [] }));
                     
-                    // 3. 掃描拖曳放開後，DOM 上「實際產生」的所有子節點順序
                     var children = el.children;
-                    var currentSecIdx = -1; // 用來標記目前走到了第幾個時段
+                    var currentSecIdx = -1;
                     
                     for (var i = 0; i < children.length; i++) {
                         var child = children[i];
                         
                         if (child.classList.contains('section-label')) {
-                            // 遇到時段標籤，代表接下來的行程都歸屬到下一個時段
                             currentSecIdx++;
                         } else if (child.classList.contains('timeline-item-wrapper')) {
-                            // 遇到行程卡片，防呆確保有時段可以放（預設丟進第一個）
                             var targetSecIdx = currentSecIdx < 0 ? 0 : currentSecIdx;
                             if (targetSecIdx >= newSecs.length) targetSecIdx = newSecs.length - 1;
                             
-                            // 透過卡片上的 data-flatidx 抓取原始的資料物件
                             var flatIdx = parseInt(child.getAttribute('data-flatidx'));
                             var itemObj = originalFlatItems[flatIdx];
                             
@@ -1410,7 +1457,6 @@
                         }
                     }
                     
-                    // 4. 將排列重新分配好的乾淨資料倒回主資料庫，並觸發畫面刷新
                     dayData.secs = newSecs;
                     saveAppState();
                     renderPanel();
