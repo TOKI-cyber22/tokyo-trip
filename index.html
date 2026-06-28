@@ -75,6 +75,9 @@
             cursor: pointer;
             box-shadow: 0 2px 5px rgba(0,0,0,0.01);
             -webkit-tap-highlight-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
         .tab-btn.active {
             background-color: var(--text-dark);
@@ -160,7 +163,6 @@
         .item-title { font-size: 1.05rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px; line-height: 1.4; }
         .item-meta { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
 
-        /* 橫向並排標籤列（核心優化：支援多標籤自動並排與換行） */
         .tags-row { 
             display: flex; 
             flex-wrap: wrap; 
@@ -200,7 +202,6 @@
             -webkit-tap-highlight-color: transparent;
         }
         .action-btn i { font-size: 1.05rem; }
-        .action-btn.btn-delete { color: #e05353; background-color: #fff5f5; }
 
         .transit-bridge {
             display: flex;
@@ -221,12 +222,16 @@
         }
         .transit-bridge i { color: #d4a373; font-size: 1.05rem; }
 
-        .item-note { font-size: 0.85rem; background-color: #f8f9fa; padding: 10px 12px; border-radius: 10px; margin-top: 8px; color: #4b5563; line-height: 1.5; }
+        .item-note { font-size: 0.85rem; padding: 10px 12px; border-radius: 10px; margin-top: 8px; color: #4b5563; line-height: 1.5; }
         .box-warning { background-color: #fff5f5; border: 1px solid #fee2e2; color: #bc1c1c; }
         .box-aeta { background-color: #faf5ff; border: 1px solid #f3e8ff; color: #6b21a8; }
         .box-aeta a { color: #7e22ce; text-decoration: none; font-weight: 600; }
         .box-deal { background-color: #fffaf0; border: 1px solid #ffedd5; color: #c2410c; }
         .box-card-tip { background-color: #f0fdf4; border: 1px solid #d1fae5; color: #065f46; }
+        
+        /* 🌟 相機店特製外觀 */
+        .box-camera { background-color: #f0fdfa; border: 1px solid #ccfbf1; color: #0f766e; }
+        .box-camera a { color: #0d9488; text-decoration: none; font-weight: 700; }
 
         .day-res-box { background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--border-radius); margin: 20px 16px 40px 16px; padding: 16px; }
         .day-res-title { font-size: 0.95rem; font-weight: 700; color: #166534; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
@@ -246,88 +251,60 @@
             gap: 10px;
         }
         .add-shop-form input {
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid #e1e4e8;
-            font-size: 0.92rem;
-            -webkit-appearance: none;
-            outline: none;
+            padding: 12px; border-radius: 10px; border: 1px solid #e1e4e8; font-size: 0.92rem; outline: none; -webkit-appearance: none;
         }
         .add-shop-form input:focus { border-color: var(--primary); }
         .add-shop-form button {
-            background-color: var(--text-dark);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            -webkit-tap-highlight-color: transparent;
+            background-color: var(--text-dark); color: white; border: none; padding: 12px; border-radius: 10px;
+            font-size: 0.95rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
         }
 
         .shop-item {
-            background-color: var(--card-bg);
-            padding: 16px;
-            border-radius: var(--border-radius);
-            margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border: 1px solid #f0f2f5;
-            position: relative;
+            background-color: var(--card-bg); padding: 16px; border-radius: var(--border-radius); margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02); display: flex; align-items: center; gap: 12px; border: 1px solid #f0f2f5; position: relative;
         }
-        .shop-item input[type="checkbox"] {
-            width: 22px; height: 22px; border-radius: 6px; accent-color: var(--text-dark); cursor: pointer; flex-shrink: 0;
-        }
+        .shop-item input[type="checkbox"] { width: 22px; height: 22px; border-radius: 6px; accent-color: var(--text-dark); cursor: pointer; flex-shrink: 0; }
         .shop-item-text { flex-grow: 1; font-size: 0.98rem; font-weight: 600; padding-right: 75px; word-break: break-all; }
         .shop-item.checked .shop-item-text { text-decoration: line-through; color: var(--text-muted); }
         .shop-item-desc { font-size: 0.82rem; color: var(--text-muted); font-weight: 400; margin-top: 2px; line-height: 1.4; }
-        
-        .shop-item-price {
-            display: inline-block;
-            background-color: #fff5f5;
-            color: #e05353;
-            font-size: 0.78rem;
-            font-weight: 700;
-            padding: 2px 7px;
-            border-radius: 6px;
-            margin-left: 6px;
-            border: 1px solid #fee2e2;
-        }
+        .shop-item-price { display: inline-block; background-color: #fff5f5; color: #e05353; font-size: 0.78rem; font-weight: 700; padding: 2px 7px; border-radius: 6px; margin-left: 6px; border: 1px solid #fee2e2; }
 
-        .shop-actions {
-            display: flex;
-            gap: 6px;
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
+        .shop-actions { display: flex; gap: 6px; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); }
+        .shop-action-btn { background: #f8f9fa; border: 1px solid #e1e4e8; color: var(--text-dark); cursor: pointer; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; }
+        .shop-action-btn.btn-delete { color: #e05353; background-color: #fff5f5; border-color: #fee2e2; }
+
+        /* 🌟 核心增強：全新優化整合式編輯燈箱（彈窗） */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 2000;
+            display: flex; align-items: center; justify-content: center;
+            padding: 16px; box-sizing: border-box;
         }
-        .shop-action-btn {
-            background: #f8f9fa;
-            border: 1px solid #e1e4e8;
-            color: var(--text-dark);
-            cursor: pointer;
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.95rem;
-            -webkit-tap-highlight-color: transparent;
+        .modal-content {
+            background: var(--card-bg); width: 100%; max-width: 460px;
+            border-radius: var(--border-radius); padding: 22px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex; flex-direction: column; gap: 14px;
+            max-height: 90vh; overflow-y: auto;
         }
-        .shop-action-btn.btn-delete {
-            color: #e05353;
-            background-color: #fff5f5;
-            border-color: #fee2e2;
+        .modal-content h3 { margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 6px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 0.85rem; font-weight: 700; color: #4b5563; }
+        .form-group input, .form-group textarea {
+            padding: 11px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.92rem; outline: none; font-family: inherit;
         }
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--text-dark); }
+        .modal-actions { display: flex; gap: 10px; margin-top: 8px; }
+        .modal-btn { flex: 1; padding: 12px; border-radius: 8px; border: none; font-size: 0.92rem; font-weight: 600; cursor: pointer; }
+        .btn-cancel { background: #f1f3f5; color: var(--text-dark); }
+        .btn-save { background: var(--text-dark); color: white; }
+
+        /* 退稅指南專用表格樣式 */
+        .tax-table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; border-radius: 12px; overflow: hidden; }
+        .tax-table th, .tax-table td { padding: 12px; text-align: left; border-bottom: 1px solid #edf2f7; font-size: 0.88rem; }
+        .tax-table th { background-color: #f1f5f9; font-weight: 700; color: #334155; }
+        .tax-card { background: white; border-radius: var(--border-radius); padding: 16px; margin-bottom: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 5px rgba(0,0,0,0.01); }
+        .tax-card-title { font-weight: 700; font-size: 1.02rem; color: var(--text-dark); margin-bottom: 6px; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
@@ -335,6 +312,37 @@
     <div class="app-header">東京自主遊隨身手冊 🗼</div>
     <div class="tabs-container" id="tabs-bar"></div>
     <div id="main-panel"></div>
+
+    <!-- 🌟 全新整合式單一編輯彈窗（解決一直點擊 Prompt 的地獄） -->
+    <div id="edit-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3><i class="ti ti-edit"></i> 編輯行程詳細資訊</h3>
+            <div class="form-group">
+                <label>⏰ 行程時間</label>
+                <input type="text" id="modal-time" placeholder="例如：09:00">
+            </div>
+            <div class="form-group">
+                <label>🗼 行程 / 店名名稱</label>
+                <input type="text" id="modal-name" placeholder="例如：晴空塔 Solamachi 逛街">
+            </div>
+            <div class="form-group">
+                <label>📍 地點 / 位置說明</label>
+                <input type="text" id="modal-addr" placeholder="例如：押上／晴空塔商場">
+            </div>
+            <div class="form-group">
+                <label>🏷️ 必逛商家標籤（多項請用「逗號」隔開）</label>
+                <input type="text" id="modal-tags" placeholder="例如：Citen (3F), 寶可夢中心 (5F)">
+            </div>
+            <div class="form-group">
+                <label>⚠️ 注意事項 / 警示備註</label>
+                <textarea id="modal-warning" rows="2" placeholder="輸入特別提醒細節..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn btn-cancel" onclick="closeEditModal()">取消</button>
+                <button class="modal-btn btn-save" onclick="saveEditModalData()">儲存修改</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         var AETA_STORES = {
@@ -354,6 +362,7 @@
         };
 
         var TL = {eat:"正餐", sweet:"甜點", shop:"購物", spot:"景點", event:"祭典"};
+        var currentEditCoords = null; // 用來記錄當前修改哪一天、哪一區、哪一個項目
         
         var initialDaysData = [
 {tab:"7/21 二",title:"7/21（週二）",sub:"凌晨4點羽田落地 → 押上放行李 → 淺草・人形町・銀座・有樂町",
@@ -508,7 +517,34 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
             { t: "GR3 數位相機機身確認", d: "新宿西口 Yodobashi（1 萬台幣額度內刷熊本熊卡賺 7.5%，超出改刷台新玩旅卡）", p: "" }
         ];
 
-        // --- 核心 LocalStorage 資料初始化檢查 ---
+        // --- ⚙️ 核心相機店地圖情報偵測規則（抓取 GR3 的最高機會點） ---
+        function getNearbyCameraShops(addressStr, nameStr) {
+            var fullTxt = (addressStr + " " + nameStr).toLowerCase();
+            var shops = [];
+            
+            if (fullTxt.includes("新宿")) {
+                shops.push({ n: "Map Camera 新宿 (西口)", d: "🔥 全東京二手/新品 GR 系列大本營！機況透明，免稅 10%", q: "Map Camera Shinjuku" });
+                shops.push({ n: "北村相機 新宿旗艦店 (東口)", d: "✨ 7層樓相機聖地！中古 GR 轉手極快，大推 2-4F 中古樓層", q: "Shinjuku Kitamura Camera" });
+                shops.push({ n: "Yodobashi 新宿西口相機館", d: "📦 傳統量販龍頭，可直接現場向店員詢問是否有隱藏全新品庫存", q: "Yodobashi Camera Shinjuku Nishiguchi Camera Palace" });
+            }
+            else if (fullTxt.includes("銀座") || fullTxt.includes("有樂町")) {
+                shops.push({ n: "Bic Camera 有樂町店", d: "🏬 擁有超巨大相機專區，常有名額限定的現貨釋出，退稅 10%", q: "Bic Camera Yurakucho" });
+                shops.push({ n: "檸檬社 (Lemon Sha) 銀座店", d: "🍋 老字號中古精品相機店，適合掏一些外觀保養極佳的古董或二手 GR", q: "Lemon Sha Ginza" });
+            }
+            else if (fullTxt.includes("澀谷") || fullTxt.includes("shibuya")) {
+                shops.push({ n: "北村相機 澀谷店", d: "📸 位於西口鬧區，機身配件流動迅速，吃完晚餐走過去極近", q: "Kitamura Camera Shibuya" });
+                shops.push({ n: "Bic Camera 澀谷東口店", d: "🛒 具有獨立相機專屬館別，免稅且可以使用折價券嘗試詢問", q: "Bic Camera Shibuya East Store" });
+            }
+            else if (fullTxt.includes("上野")) {
+                shops.push({ n: "Yodobashi Camera 上野店", d: "🚉 就在車站外，相機館貨源相對穩定，常常是避開新宿戰區的撿漏點", q: "Yodobashi Camera Ueno" });
+            }
+            else if (fullTxt.includes("池袋")) {
+                shops.push({ n: "Bic Camera 池袋相機電腦館", d: "🎯 專門把相機開成獨立一棟的大店！GR 周邊與機身相對齊全", q: "Bic Camera Ikebukuro Camera" });
+            }
+            return shops;
+        }
+
+        // --- 核心 LocalStorage 初始化 ---
         if (!localStorage.getItem('tokyo_days_data_v4')) {
             localStorage.setItem('tokyo_days_data_v4', JSON.stringify(initialDaysData));
         }
@@ -540,6 +576,7 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
                 tabsBar.appendChild(btn);
             });
 
+            // 購物清單頁
             var shopBtn = document.createElement('button');
             shopBtn.className = 'tab-btn' + (activeIndex === 'shop' ? ' active' : '');
             shopBtn.innerHTML = '<i class="ti ti-shopping-cart"></i> 購物清單';
@@ -550,9 +587,21 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             };
             tabsBar.appendChild(shopBtn);
+
+            // 🌟 升級功能：退稅指南獨立導覽頁
+            var taxBtn = document.createElement('button');
+            taxBtn.className = 'tab-btn' + (activeIndex === 'tax' ? ' active' : '');
+            taxBtn.innerHTML = '<i class="ti ti-file-analytics"></i> 退稅指南';
+            taxBtn.onclick = function() {
+                activeIndex = 'tax';
+                renderTabs();
+                renderTaxGuide();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+            tabsBar.appendChild(taxBtn);
         }
 
-        // --- 渲染日程頁面 ---
+        // --- 渲染主要行程頁面 ---
         function renderDay(index) {
             var daysData = JSON.parse(localStorage.getItem('tokyo_days_data_v4'));
             var day = daysData[index];
@@ -572,10 +621,7 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
                     
                     html += '<div class="timeline-item-wrapper" data-id="' + itemIdx + '">';
                     html += '  <div class="timeline-card">';
-                    
-                    // 拖曳把手
                     html += '    <div class="drag-handle"><i class="ti ti-selector"></i></div>';
-                    
                     html += '    <div class="card-left">';
                     html += '      <div class="time-text">' + (item.t || '--:--') + '</div>';
                     html += '      <div class="type-badge" style="background-color: var(--bg-' + item.type + '); color: var(--text-' + item.type + ');">' + label + '</div>';
@@ -587,7 +633,7 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
                     
                     if (item.h) { html += '      <div class="item-meta"><i class="ti ti-clock"></i> ' + item.h + '</div>'; }
                     
-                    // 🌟 橫向並排多標籤輸出區
+                    // 橫向並排多標籤
                     if (item.tags && item.tags.length > 0) {
                         html += '      <div class="tags-row">';
                         item.tags.forEach(function(tag) {
@@ -596,6 +642,7 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
                         html += '      </div>';
                     }
                     
+                    // Aeta 專櫃提醒
                     if (item.aeta && item.aeta.length > 0) {
                         html += '      <div class="item-note box-aeta">';
                         html += '        <div style="font-weight: 700; margin-bottom: 4px; font-size: 0.8rem;"><i class="ti ti-shopping-bag"></i> 附近 Aeta 販賣點</div>';
@@ -606,6 +653,7 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
                         html += '      </div>';
                     }
                     
+                    // 退稅細節提示
                     if (item.deals && item.deals.length > 0) {
                         html += '      <div class="item-note box-deal">';
                         item.deals.forEach(function(d) {
@@ -614,9 +662,21 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
                         html += '      </div>';
                     }
 
+                    // 刷卡戰術提醒
                     if (item.card_tip) {
                         html += '      <div class="item-note box-card-tip">';
                         html += '        <div><i class="ti ti-credit-card"></i> ' + item.card_tip + '</div>';
+                        html += '      </div>';
+                    }
+                    
+                    // 🌟 核心升級：自動尋找附近相機名店並渲染（獵捕 GR3 機會提高）
+                    var cameraShops = getNearbyCameraShops(item.a, item.n);
+                    if (cameraShops.length > 0) {
+                        html += '      <div class="item-note box-camera">';
+                        html += '        <div style="font-weight: 700; margin-bottom: 4px; font-size: 0.82rem;"><i class="ti ti-camera"></i> 附近 GR3 獵捕相機店機會點：</div>';
+                        cameraShops.forEach(function(shop) {
+                            html += '        <div style="margin: 3px 0; font-size:0.8rem;">📍 <a href="' + mapsUrl(shop.q) + '" target="_blank">' + shop.n + ' <i class="ti ti-external-link" style="font-size:0.65rem;"></i></a><br><span style="color:#0f766e; opacity:0.85;">' + shop.d + '</span></div>';
+                        });
                         html += '      </div>';
                     }
                     
@@ -626,24 +686,20 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
                     
                     html += '    </div>';
                     
-                    // 操作按鈕群
+                    // 動作按鈕：修改功能改為開啟高質感燈箱
                     html += '    <div class="card-actions">';
-                    html += '      <button class="action-btn" onclick="editTimelineItem(' + index + ',' + secIdx + ',' + itemIdx + ')" title="編輯行程"><i class="ti ti-edit"></i></button>';
+                    html += '      <button class="action-btn" onclick="openEditModal(' + index + ',' + secIdx + ',' + itemIdx + ')" title="編輯行程"><i class="ti ti-edit"></i></button>';
                     if (item.q) {
                         html += '    <a class="action-btn" href="' + mapsUrl(item.q) + '" target="_blank" title="查看地圖"><i class="ti ti-map-2"></i></a>';
                     }
                     html += '    </div>';
-                    
                     html += '  </div>'; 
 
                     if (item.tr) {
-                        html += '  <div class="transit-bridge">';
-                        html += '    <i class="ti ti-train"></i> ' + item.tr;
-                        html += '  </div>';
+                        html += '  <div class="transit-bridge"><i class="ti ti-train"></i> ' + item.tr + '</div>';
                     }
                     html += '</div>'; 
                 });
-                
                 html += '</div>'; 
             });
 
@@ -680,47 +736,134 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
             });
         }
 
-        // --- 🛠️ 升級版：編輯行程（包含多重商家標籤並排功能） ---
-        window.editTimelineItem = function(dayIdx, secIdx, itemIdx) {
+        // --- 🛠️ 整合式燈箱操作功能（完美取代煩人的 Prompt 彈窗） ---
+        window.openEditModal = function(dayIdx, secIdx, itemIdx) {
+            currentEditCoords = { d: dayIdx, s: secIdx, i: itemIdx };
             var daysData = JSON.parse(localStorage.getItem('tokyo_days_data_v4'));
             var item = daysData[dayIdx].secs[secIdx].items[itemIdx];
             
-            var newT = prompt("⏰ 修改時間（例如：09:30）：", item.t || "");
-            if (newT === null) return;
-            var newN = prompt("🗼 修改行程/店名名稱：", item.n);
-            if (newN === null || !newN.trim()) return;
-            var newA = prompt("📍 修改地點/位置說明：", item.a || "");
-            if (newA === null) return;
+            // 將原有數值塞入表單輸入框中
+            document.getElementById('modal-time').value = item.t || '';
+            document.getElementById('modal-name').value = item.n || '';
+            document.getElementById('modal-addr').value = item.a || '';
+            document.getElementById('modal-tags').value = (item.tags || []).join(', ');
+            document.getElementById('modal-warning').value = item.w || '';
             
-            // 🌟 核心升級：提示使用者輸入多個專櫃，用逗號隔開
-            var currentTagsStr = (item.tags || []).join(', ');
-            var newTagsStr = prompt("🏷️ 想逛的商家標籤（多個商家請用「逗號」隔開，網頁會自動精美並排呈現唷！）：\n例如：Citen (3F), 寶可夢中心 (5F), LOFT (4F)", currentTagsStr);
-            if (newTagsStr === null) return;
+            // 顯示遮罩層
+            document.getElementById('edit-modal').style.display = 'flex';
+        };
+
+        window.closeEditModal = function() {
+            document.getElementById('edit-modal').style.display = 'none';
+            currentEditCoords = null;
+        };
+
+        window.saveEditModalData = function() {
+            if (!currentEditCoords) return;
+            var daysData = JSON.parse(localStorage.getItem('tokyo_days_data_v4'));
+            var item = daysData[currentEditCoords.d].secs[currentEditCoords.s].items[currentEditCoords.i];
             
-            var newW = prompt("⚠️ 修改注意事項/備註（留空則不顯示）：", item.w || "");
-            if (newW === null) return;
+            // 獲取燈箱輸入的值
+            var timeVal = document.getElementById('modal-time').value.trim();
+            var nameVal = document.getElementById('modal-name').value.trim();
+            var addrVal = document.getElementById('modal-addr').value.trim();
+            var tagsVal = document.getElementById('modal-tags').value.trim();
+            var warnVal = document.getElementById('modal-warning').value.trim();
             
-            item.t = newT.trim();
-            item.n = newN.trim();
-            item.a = newA.trim();
-            item.w = newW.trim();
+            if (!nameVal) {
+                alert('行程或商家名稱不能為空唷！');
+                return;
+            }
             
-            // 解析標籤字串，同時支援半形與全形逗號
-            if (newTagsStr.trim() === "") {
+            // 寫入對象
+            item.t = timeVal;
+            item.n = nameVal;
+            item.a = addrVal;
+            item.w = warnVal;
+            
+            // 切割標籤組
+            if (tagsVal === "") {
                 item.tags = [];
             } else {
-                item.tags = newTagsStr.split(/,|，/).map(function(s) { 
+                item.tags = tagsVal.split(/,|，/).map(function(s) { 
                     return s.trim(); 
                 }).filter(function(s) { 
                     return s.length > 0; 
                 });
             }
             
+            // 存入 LocalStorage 並刷新
             localStorage.setItem('tokyo_days_data_v4', JSON.stringify(daysData));
-            renderDay(dayIdx);
+            document.getElementById('edit-modal').style.display = 'none';
+            
+            if (typeof activeIndex === 'number') {
+                renderDay(activeIndex);
+            }
+            currentEditCoords = null;
         };
 
-        // --- 🛍️ 渲染購物清單 ---
+        // --- 📜 🌟 全新升級功能：自動整合彙整的「退稅與刷卡攻略指南」分頁 ---
+        function renderTaxGuide() {
+            var daysData = JSON.parse(localStorage.getItem('tokyo_days_data_v4'));
+            var html = '';
+            
+            html += '<div class="day-header-box">';
+            html += '  <div class="day-title">📜 本次行程商場退稅彙整指南</div>';
+            html += '  <div class="day-sub">本頁自動化抽取所有行程中的購物點退稅規則，排隊辦理免稅前迅速對照！</div>';
+            html += '</div>';
+            
+            html += '<div class="shop-list-container">';
+            
+            var foundAny = false;
+            
+            daysData.forEach(function(day) {
+                day.secs.forEach(function(sec) {
+                    sec.items.forEach(function(item) {
+                        // 如果該節點屬於購物、或者帶有 deals 退稅資訊，就將其抓出彙整
+                        if ((item.deals && item.deals.length > 0) || item.type === 'shop') {
+                            foundAny = true;
+                            html += '<div class="tax-card">';
+                            html += '  <div class="tax-card-title">';
+                            html += '    <span>🛍️ ' + item.n + '</span>';
+                            html += '    <span style="font-size:0.8rem; color:var(--text-muted); font-weight:normal;">' + day.tab + '</span>';
+                            html += '  </div>';
+                            html += '  <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:8px;"><i class="ti ti-map-pin"></i> ' + item.a + '</div>';
+                            
+                            // 輸出退稅資訊
+                            if (item.deals && item.deals.length > 0) {
+                                item.deals.forEach(function(d) {
+                                    html += '<div style="background:#fffaf0; border:1px solid #ffedd5; padding:8px 12px; border-radius:8px; font-size:0.88rem; color:#c2410c; margin-bottom:6px;">';
+                                    html += '  <b>' + d.b + '：</b>' + d.d;
+                                    html += '</div>';
+                                });
+                            } else {
+                                html += '<div style="background:#f1f5f9; padding:8px 12px; border-radius:8px; font-size:0.85rem; color:#475569; margin-bottom:6px;">';
+                                html += '  • 一般常規退稅：滿 5,000 日圓可免稅 10%（依各專櫃或商場免稅櫃台公告為準）。';
+                                html += '</div>';
+                            }
+                            
+                            // 輸出最佳推薦卡片
+                            if (item.card_tip) {
+                                html += '<div style="background:#f0fdf4; border:1px solid #d1fae5; padding:8px 12px; border-radius:8px; font-size:0.85rem; color:#065f46;">';
+                                html += '  <i class="ti ti-credit-card"></i> ' + item.card_tip;
+                                html += '</div>';
+                            }
+                            
+                            html += '</div>';
+                        }
+                    });
+                });
+            });
+            
+            if (!foundAny) {
+                html += '<div style="text-align:center; color:var(--text-muted); padding:40px;">目前日程中沒有偵測到帶有退稅說明的購物行程唷！</div>';
+            }
+            
+            html += '</div>';
+            mainPanel.innerHTML = html;
+        }
+
+        // --- 🛍️ 渲染隨身購物清單清單頁面 ---
         function renderShoppingList() {
             var list = JSON.parse(localStorage.getItem('tokyo_shopping_list_v4'));
             var html = '';
@@ -731,7 +874,6 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
             html += '</div>';
             
             html += '<div class="shop-list-container">';
-            
             html += '  <div class="add-shop-form">';
             html += '    <input type="text" id="new-shop-title" placeholder="想買的物品名稱（例如：合利他命）">';
             html += '    <input type="text" id="new-shop-desc" placeholder="備註或刷卡戰術（例如：大國藥妝、刷熊本熊卡）">';
@@ -753,11 +895,9 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
                     html += '  <input type="checkbox" ' + checkedAttr + ' onchange="toggleShopItem(' + idx + ', this)">';
                     html += '  <div class="shop-item-text">';
                     html += '    ' + item.t;
-                    
                     if (item.p && item.p.trim() !== '') {
                         html += '    <span class="shop-item-price">💴 ' + item.p + '</span>';
                     }
-                    
                     html += '    <div class="shop-item-desc">' + (item.d || '暫無備註') + '</div>';
                     html += '  </div>';
                     
@@ -777,7 +917,6 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
             var list = JSON.parse(localStorage.getItem('tokyo_shopping_list_v4'));
             list[idx].checked = checkbox.checked;
             localStorage.setItem('tokyo_shopping_list_v4', JSON.stringify(list));
-            
             var box = document.getElementById('shop-box-' + idx);
             if (checkbox.checked) { box.classList.add('checked'); }
             else { box.classList.remove('checked'); }
@@ -787,7 +926,6 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
             var titleInput = document.getElementById('new-shop-title');
             var descInput = document.getElementById('new-shop-desc');
             var priceInput = document.getElementById('new-shop-price');
-            
             var t = titleInput.value.trim();
             var d = descInput.value.trim();
             var p = priceInput.value.trim();
@@ -800,14 +938,12 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
             var list = JSON.parse(localStorage.getItem('tokyo_shopping_list_v4'));
             list.push({ t: t, d: d, p: p, checked: false });
             localStorage.setItem('tokyo_shopping_list_v4', JSON.stringify(list));
-            
             renderShoppingList();
         };
 
         window.editShopItem = function(idx) {
             var list = JSON.parse(localStorage.getItem('tokyo_shopping_list_v4'));
             var item = list[idx];
-            
             var newT = prompt("🛍️ 修改物品名稱：", item.t);
             if (newT === null || !newT.trim()) return;
             var newD = prompt("📝 修改備註或刷卡戰術：", item.d || "");
@@ -832,6 +968,7 @@ res:[{d:"玉ひで：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現
             }
         };
 
+        // 啟動渲染
         renderTabs();
         renderDay(activeIndex);
     </script>
