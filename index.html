@@ -256,15 +256,6 @@
             flex-shrink: 0;
         }
         .transit-map-link i { color: #0369a1; font-size: 0.85rem; }
-        .transit-map-iframe {
-            display: none !important;
-            width: 100%;
-            height: 180px;
-            border: none;
-            border-radius: 10px;
-            margin-top: 2px;
-            background-color: #eef1f4;
-        }
 
         .item-note { font-size: 0.85rem; padding: 10px 12px; border-radius: 10px; margin-top: 8px; color: #4b5563; line-height: 1.5; }
         .box-warning { background-color: #fff5f5; border: 1px solid #fee2e2; color: #bc1c1c; }
@@ -461,8 +452,7 @@
             </div>
         </div>
     </div>
-    
-    function saveToStorage() { localStorage.setItem('tokyo_trip_data', JSON.stringify(initialDaysData)); }
+
     <script>
         var CARD_STRATEGY = {
             bear_yodobashi: "【優先刷這張】玉山熊本熊卡：日本特定通路享免手續費 + 1% + 加碼 5% ＝ 最高 7.5% 回饋！（加碼上限刷台幣 1 萬，爆額改刷台新玩旅）",
@@ -489,8 +479,7 @@
             { n: "NEWoMan 新宿", fee: "1.55%", rate: "實退 8.45%", coupon: "無常態折價券", note: "行程 Day 6 購物點。精緻高質感輕奢包袋品牌集結地，需持收據統一至 2F 免稅櫃台辦理，扣除 1.55% 服務費。" }
         ];
 
-// 如果瀏覽器有存檔，就用存檔；沒有才用原始資料
-var initialDaysData = [
+        var initialDaysData = [
             {tab:"7/21 二",title:"7/21（週二）",sub:"凌晨4點羽田落地 → 押上放行李 → 淺草・人形町・銀座・有樂町", secs:[
                 {l:"早上",items:[
                     {t:"08:00",n:"MISOJYU（早餐）",type:"eat",a:"淺草／淺草站",h:"08:00–15:30",q:"Misojyu Asakusa Tokyo",tr:"吃飽後 🚶 步行 10 分鐘"},
@@ -601,15 +590,7 @@ var initialDaysData = [
             ], res:[{d:"玉ひ為：提前電話預約 03-3668-7651"},{d:"天ぷら中山：現場11:15前排隊，現金only"}] }
         ];
 
-        
-
-        // 載入已儲存資料
-        var savedData = localStorage.getItem('tokyo_trip_data');
-        if (savedData) {
-            try { initialDaysData = JSON.parse(savedData); } catch(e) { console.error(e); }
-        }
-
-var defaultShoppingList = [
+        var defaultShoppingList = [
             { t: "理光 RICOH GR3 機身", lang: "RICOH GR III", d: "新宿西口 Yodobashi、Map Camera、優先刷熊本熊卡賺 7.5%", jpy: 130000, twd: 34400, checked: false },
             { t: "黛珂完美校色遮瑕盤", lang: "コスメデコルテ トーンパーフェクティング パレット", d: "新宿伊勢丹、實拿 8.45% 稅、搭配 5% Guest卡", jpy: 4950, twd: 1200, checked: false },
             { t: "Rosy Rosa 彩妝工具", lang: "ロージーローザ", d: "@cosme TOKYO、免手續費實退 10%、刷玩旅卡 3.3%", jpy: 700, twd: 250, checked: false },
@@ -621,20 +602,6 @@ var defaultShoppingList = [
         ];
 
         var defaultExpenses = { "0":[], "1":[], "2":[], "3":[], "4":[], "5":[], "6":[] };
-
-        // ============================================================
-        // 🗺️ 地圖嵌入設定（方案 A → 方案 B 的開關）
-        // ------------------------------------------------------------
-        // 現狀（方案A）：GOOGLE_MAPS_EMBED_KEY 留空，會用 Google 免Key的
-        // 舊式嵌入方式直接顯示路線預覽。免設定，但 Google 沒有正式保證
-        // 這個方式永遠可用，少數情況可能顯示空白。
-        //
-        // 升級（方案B）：之後想要 100% 穩定顯示，只要：
-        //   1. 前往 https://console.cloud.google.com/ 建立專案
-        //   2. 啟用「Maps Embed API」，建立一個 API 金鑰
-        //   3. 把金鑰貼到下面這行的雙引號中間即可，其他程式碼都不用改
-        // ============================================================
-        var GOOGLE_MAPS_EMBED_KEY = ""; // 👈 之後要升級成方案B，金鑰貼這裡
 
         // 🎯 建立「原始相鄰配對」的交通備註查詢表
         // 掃描初始資料中每一組「現在站→下一站」的 tr 備註，存成查詢表
@@ -654,7 +621,7 @@ var defaultShoppingList = [
         // 🎯 動態產生交通區塊：永遠抓「目前卡片」與「畫面上真正的下一張卡片」的地址/店名
         // 1. 若這兩個地點曾經相鄰過（查得到原本寫的詳細備註），就沿用你研究好的內容
         // 2. 若是拖曳後產生的全新組合，就用兩邊的地址動態生成文字描述
-        // 3. 同時直接內嵌一張小地圖預覽在頁面裡（方案A：免Key／方案B：填了Key就自動換成穩定版）
+        // 3. 改以純文字描述交通方式，並提供「完整地圖」連結點開查看，不再內嵌地圖縮圖
         function generateTransitBlock(currentItem, nextItem) {
             if (!currentItem || !nextItem) return "";
 
@@ -669,28 +636,10 @@ var defaultShoppingList = [
             var sameSpot = fromAddr && toAddr && fromAddr === toAddr;
             var modeText = curatedTr
                 ? curatedTr
-                : (sameSpot ? "🚶 同地點內移動，步行即可" : "🚇 大眾交通工具，詳細路線請見下方地圖");
+                : (sameSpot ? "🚶 同地點內移動，步行即可" : "🚇 大眾交通工具，點右側「完整地圖」查看詳細路線");
 
             var mapsUrl = "https://www.google.com/maps/dir/?api=1&origin="
                 + encodeURIComponent(fromQ) + "&destination=" + encodeURIComponent(toQ) + "&travelmode=transit";
-
-            // 🗺️ 內嵌地圖：依照是否填了 GOOGLE_MAPS_EMBED_KEY 自動切換方案A／方案B
-            var mapEmbedHtml = "";
-            if (!sameSpot) {
-                var embedSrc;
-                if (GOOGLE_MAPS_EMBED_KEY) {
-                    // 方案B：官方 Maps Embed API，穩定但需要金鑰
-                    embedSrc = "https://www.google.com/maps/embed/v1/directions?key=" + GOOGLE_MAPS_EMBED_KEY
-                        + "&origin=" + encodeURIComponent(fromQ) + "&destination=" + encodeURIComponent(toQ) + "&mode=transit";
-                } else {
-                    // 方案A：免Key的舊式嵌入，多數情況可顯示，少數情況可能空白
-                    embedSrc = "https://maps.google.com/maps?saddr=" + encodeURIComponent(fromQ)
-                        + "&daddr=" + encodeURIComponent(toQ) + "&output=embed";
-                }
-                mapEmbedHtml = `
-                    <iframe class="transit-map-iframe" src="${embedSrc}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                `;
-            }
 
             return `
                 <div class="transit-bridge">
@@ -704,7 +653,6 @@ var defaultShoppingList = [
                         <span class="transit-mode-text">${modeText}</span>
                         <a class="transit-map-link" href="${mapsUrl}" target="_blank"><i class="ti ti-arrows-maximize"></i> 完整地圖</a>
                     </div>
-                    ${mapEmbedHtml}
                 </div>
             `;
         }
@@ -820,9 +768,8 @@ var defaultShoppingList = [
                                             return "";
                                         })()}
                                     </div>
-                                   <div class="card-actions">
+                                    <div class="card-actions">
                                         <button class="action-btn" onclick="openEditModal(${dayIdx}, ${sIdx}, ${iIdx})"><i class="ti ti-edit"></i></button>
-                                        <button class="action-btn" onclick="deleteTimelineItem(${dayIdx}, ${sIdx}, ${iIdx})" style="color: #e05353;"><i class="ti ti-trash"></i></button>
                                         <a class="action-btn" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.q || item.n)}" target="_blank"><i class="ti ti-map-2"></i></a>
                                     </div>
                                 </div>
@@ -831,14 +778,6 @@ var defaultShoppingList = [
                         `;
                         flatIdx++;
                     });
-                    // 🎯 在每個時段（例如：早上、下午）的行程結束後，補上一個新增按鈕
-                    html += `
-                        <div style="padding: 0 16px 12px 16px;">
-                            <button class="btn-add-expense" style="margin-top:0; margin-bottom:10px; padding:8px;" onclick="openAddModal(${dayIdx}, ${sIdx})">
-                                <i class="ti ti-plus"></i> 新增【${sec.l}】時段行程
-                            </button>
-                        </div>
-                    `;
                 });
                 
                 html += `</div>`;
@@ -1116,14 +1055,10 @@ var defaultShoppingList = [
             renderPanel();
         }
 
-        // 🎯 點擊編輯：開啟彈窗並帶入舊資料
         function openEditModal(dayIdx, sIdx, iIdx) {
             currentEditCoords = { d: dayIdx, s: sIdx, i: iIdx };
             var item = initialDaysData[dayIdx].secs[sIdx].items[iIdx];
             
-            var heading = document.querySelector('#edit-modal h3');
-            if (heading) heading.innerHTML = '<i class="ti ti-edit"></i> 編輯行程詳細資訊';
-
             document.getElementById('modal-time').value = item.t || "";
             document.getElementById('modal-name').value = item.n || "";
             document.getElementById('modal-addr').value = item.a || "";
@@ -1133,76 +1068,35 @@ var defaultShoppingList = [
             document.getElementById('edit-modal').style.display = "flex";
         }
 
-        // 🎯 點擊新增：清空彈窗欄位準備輸入新行程
-        function openAddModal(dayIdx, sIdx) {
-            currentEditCoords = { d: dayIdx, s: sIdx, i: null }; 
-            
-            var heading = document.querySelector('#edit-modal h3');
-            if (heading) heading.innerHTML = '<i class="ti ti-plus"></i> 新增行程詳細資訊';
-
-            document.getElementById('modal-time').value = "";
-            document.getElementById('modal-name').value = "";
-            document.getElementById('modal-addr').value = "";
-            document.getElementById('modal-tags').value = "";
-            document.getElementById('modal-warning').value = "";
-            
-            document.getElementById('edit-modal').style.display = "flex";
-        }
-
         function closeEditModal() {
             document.getElementById('edit-modal').style.display = "none";
             currentEditCoords = null;
         }
 
-        // 🎯 點擊儲存：自動判定是「修改舊有」還是「插入全新」行程
         function saveEditModalData() {
             if (!currentEditCoords) return;
             var coords = currentEditCoords;
+            var item = initialDaysData[coords.d].secs[coords.s].items[coords.i];
             
-            var tStr = document.getElementById('modal-time').value.trim();
-            var nStr = document.getElementById('modal-name').value.trim() || "未命名行程";
-            var aStr = document.getElementById('modal-addr').value.trim();
+            item.t = document.getElementById('modal-time').value.trim();
+            item.n = document.getElementById('modal-name').value.trim();
+            item.a = document.getElementById('modal-addr').value.trim();
             
-            var tagsArr = null;
             var tagsVal = document.getElementById('modal-tags').value.trim();
             if (tagsVal) {
-                tagsArr = tagsVal.split(',').map(s => s.trim()).filter(s => s.length > 0);
+                item.tags = tagsVal.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            } else {
+                delete item.tags;
             }
             
             var warnVal = document.getElementById('modal-warning').value.trim();
-
-            if (coords.i !== null) {
-                var item = initialDaysData[coords.d].secs[coords.s].items[coords.i];
-                item.t = tStr;
-                item.n = nStr;
-                item.a = aStr;
-                if (tagsArr) item.tags = tagsArr; else delete item.tags;
-                if (warnVal) item.w = warnVal; else delete item.w;
-            } else {
-                var newItem = {
-                    t: tStr,
-                    n: nStr,
-                    a: aStr,
-                    type: "spot", 
-                    q: nStr + " " + aStr
-                };
-                if (tagsArr) newItem.tags = tagsArr;
-                if (warnVal) newItem.w = warnVal;
-                
-                initialDaysData[coords.d].secs[coords.s].items.push(newItem);
-            }
+            if (warnVal) item.w = warnVal;
+            else delete item.w;
             
             closeEditModal();
             renderPanel();
         }
 
-        // 🎯 刪除功能：點擊後從資料庫剔除行程
-        function deleteTimelineItem(dayIdx, sIdx, iIdx) {
-            if (confirm("確定要刪除這項行程嗎？（注意：重開網頁將回復預設值）")) {
-                initialDaysData[dayIdx].secs[sIdx].items.splice(iIdx, 1);
-                renderPanel();
-            }
-        }
         function openAccountModal(dayIndex) {
             document.getElementById('account-day-index').value = dayIndex;
             document.getElementById('account-modal-name').value = "";
@@ -1286,7 +1180,6 @@ var defaultShoppingList = [
                     // 4. 將排列重新分配好的乾淨資料倒回主資料庫，並觸發畫面刷新
                     dayData.secs = newSecs;
                     renderPanel();
-              saveToStorage();
                 }
             });
         }
