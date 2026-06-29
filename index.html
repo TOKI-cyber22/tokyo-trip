@@ -407,11 +407,50 @@
             align-items: center;
             -webkit-tap-highlight-color: transparent;
         }
+
+        .sync-badge {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.66rem;
+            font-weight: 600;
+            color: #94a3b8;
+            cursor: pointer;
+            white-space: nowrap;
+            max-width: 96px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sync-badge.synced { color: #16a34a; }
+        .sync-badge.syncing { color: #d4a373; }
+        .sync-badge.error { color: #e05353; }
+
+        .cloud-sync-section {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .cloud-sync-section h4 { margin: 0; font-size: 0.95rem; color: #166534; display: flex; align-items: center; gap: 6px; }
+        .cloud-sync-section p { margin: 0; font-size: 0.82rem; color: #4b5563; line-height: 1.5; }
+        .cloud-sync-row { display: flex; gap: 6px; }
+        .cloud-sync-row input {
+            flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.82rem; outline: none;
+        }
+        .cloud-sync-row button {
+            flex-shrink: 0; padding: 0 14px; border-radius: 8px; border: none; background: #166534; color: white; font-weight: 600; font-size: 0.85rem; cursor: pointer;
+        }
+        .cloud-sync-clear-link { font-size: 0.78rem; color: #94a3b8; text-decoration: underline; cursor: pointer; align-self: flex-start; }
     </style>
 </head>
 <body>
 
     <div class="app-header">
+        <span class="sync-badge" id="sync-status-badge" onclick="openBackupModal()">尚未設定雲端同步</span>
         東京自主遊隨身手冊 🗼
         <button class="backup-btn" onclick="openBackupModal()" title="匯出／匯入備份檔，跨裝置傳輸"><i class="ti ti-file-export"></i></button>
         <button class="reset-btn" onclick="resetAppState()" title="清除所有修改，還原成原始行程"><i class="ti ti-refresh-alert"></i></button>
@@ -528,9 +567,21 @@
 
     <div id="backup-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
-            <h3><i class="ti ti-file-export"></i> 資料備份與跨裝置傳輸</h3>
+            <h3><i class="ti ti-file-export"></i> 資料備份與跨裝置同步</h3>
+
+            <div class="cloud-sync-section">
+                <h4><i class="ti ti-cloud"></i> 雲端同步（手機／電腦自動同步）</h4>
+                <p>把你 Apps Script 部署後拿到的「網頁應用程式網址」貼在下面。<b>兩台裝置都貼一樣的網址</b>，之後編輯行程就會自動互相同步，不用再手動匯出匯入。</p>
+                <div class="cloud-sync-row">
+                    <input type="text" id="cloud-sync-url-input" placeholder="貼上 https://script.google.com/macros/s/.../exec">
+                    <button onclick="saveSyncUrlSetting()">儲存</button>
+                </div>
+                <div class="backup-status-text" id="cloud-sync-status-text"></div>
+                <span class="cloud-sync-clear-link" id="cloud-sync-clear-link" onclick="clearSyncUrlSetting()" style="display:none;">停用雲端同步，改回只存在本機</span>
+            </div>
+
             <p class="backup-helper-text">
-                不接任何雲端服務，純粹用一個檔案搬資料：在這台裝置匯出備份檔，自己用 LINE / Email / 雲端硬碟傳到另一台裝置，再匯入即可同步。
+                不想用雲端同步也沒關係，下面這個方式一樣可以手動搬資料：在這台裝置匯出備份檔，自己用 LINE / Email / 雲端硬碟傳到另一台裝置，再匯入即可同步。
             </p>
 
             <div class="backup-section">
@@ -565,9 +616,137 @@
 
         var STORAGE_KEY = "tokyo_trip_handbook_v1";
 
+        // ============================================================
+        // ☁️ 雲端同步（跨裝置：手機/電腦共用同一份資料）
+        // ------------------------------------------------------------
+        // 原理：把網址存在「這台裝置瀏覽器」的 localStorage 裡（key: SYNC_URL_KEY）。
+        // 兩台裝置只要透過 backup-modal 貼上同一個 Apps Script 網址，
+        // 之後每次 saveAppState() 都會自動把資料 POST 上雲端，
+        // 每次開啟頁面也會自動 GET 雲端最新資料回來比對、覆蓋。
+        //
+        // 技術細節（給未來維護者）：
+        // Google Apps Script 網頁應用程式不支援瀏覽器的 CORS 預檢請求(OPTIONS)，
+        // 所以 POST 一定要用 Content-Type: text/plain，避免觸發預檢，
+        // 否則瀏覽器會直接擋掉請求，連 Apps Script 都收不到。
+        // ============================================================
+        var SYNC_URL_KEY = "tokyo_trip_sync_url";
+        var syncDebounceTimer = null;
+
+        function getSyncUrl() {
+            try { return localStorage.getItem(SYNC_URL_KEY) || ""; } catch (e) { return ""; }
+        }
+        function setSyncUrl(url) {
+            try { localStorage.setItem(SYNC_URL_KEY, url); } catch (e) {}
+        }
+        function removeSyncUrl() {
+            try { localStorage.removeItem(SYNC_URL_KEY); } catch (e) {}
+        }
+
+        function updateSyncBadge(text, cls) {
+            var badge = document.getElementById('sync-status-badge');
+            if (badge) { badge.textContent = text; badge.className = "sync-badge " + (cls || ""); }
+            var modalStatus = document.getElementById('cloud-sync-status-text');
+            if (modalStatus) modalStatus.textContent = text;
+        }
+
+        // 把目前資料推上雲端。debounce 800ms：連續操作（例如打字）時不會瘋狂發請求。
+        function pushToCloud(payload) {
+            var url = getSyncUrl();
+            if (!url || !payload) return;
+
+            clearTimeout(syncDebounceTimer);
+            syncDebounceTimer = setTimeout(function () {
+                updateSyncBadge("☁️ 同步中...", "syncing");
+                fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // 關鍵：避免CORS預檢
+                    body: JSON.stringify(payload)
+                })
+                    .then(function (res) {
+                        if (!res.ok) throw new Error("HTTP " + res.status);
+                        return res.json();
+                    })
+                    .then(function () {
+                        var t = new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+                        updateSyncBadge("☁️ 已同步 " + t, "synced");
+                    })
+                    .catch(function (err) {
+                        console.warn("雲端同步失敗：", err);
+                        updateSyncBadge("⚠️ 同步失敗，請檢查網址", "error");
+                    });
+            }, 800);
+        }
+
+        // 從雲端拉取資料。回傳 Promise，resolve 拉到的 payload（讀不到或失敗就回傳 null）。
+        function pullFromCloud() {
+            var url = getSyncUrl();
+            if (!url) return Promise.resolve(null);
+
+            updateSyncBadge("☁️ 同步中...", "syncing");
+            return fetch(url)
+                .then(function (res) {
+                    if (!res.ok) throw new Error("HTTP " + res.status);
+                    return res.text();
+                })
+                .then(function (text) {
+                    if (!text) return null;
+                    var payload;
+                    try { payload = JSON.parse(text); } catch (e) { return null; }
+                    if (!payload || !payload.days) return null;
+                    return payload;
+                })
+                .catch(function (err) {
+                    console.warn("雲端讀取失敗：", err);
+                    updateSyncBadge("⚠️ 雲端讀取失敗，使用本機資料", "error");
+                    return null;
+                });
+        }
+
+        // 設定彈窗：儲存網址並立即測試同步
+        function saveSyncUrlSetting() {
+            var input = document.getElementById('cloud-sync-url-input');
+            var url = input.value.trim();
+            if (!url) { updateSyncBadge("請先貼上網址", "error"); return; }
+            if (url.indexOf("script.google.com") === -1) {
+                if (!confirm("這個網址看起來不像 Apps Script 網址，確定要儲存嗎？")) return;
+            }
+            setSyncUrl(url);
+            document.getElementById('cloud-sync-clear-link').style.display = "inline";
+            updateSyncBadge("☁️ 測試連線中...", "syncing");
+
+            pullFromCloud().then(function (cloudPayload) {
+                if (cloudPayload) {
+                    // 雲端已有資料：詢問用這台還是用雲端的
+                    if (confirm("偵測到雲端已經有同步資料（可能是另一台裝置存的）。\n\n按「確定」會用雲端資料覆蓋這台裝置目前畫面；按「取消」則會把這台裝置目前的資料蓋過去雲端。")) {
+                        initialDaysData = cloudPayload.days;
+                        defaultShoppingList = cloudPayload.shop || defaultShoppingList;
+                        defaultExpenses = cloudPayload.expenses || defaultExpenses;
+                        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudPayload)); } catch (e) {}
+                        renderTabs();
+                        renderPanel();
+                        updateSyncBadge("☁️ 已同步（採用雲端資料）", "synced");
+                    } else {
+                        saveAppState();
+                    }
+                } else {
+                    // 雲端目前是空的：直接把這台裝置資料推上去當作初始資料
+                    saveAppState();
+                }
+            });
+        }
+
+        function clearSyncUrlSetting() {
+            if (!confirm("確定要停用雲端同步嗎？資料會繼續只存在這台裝置本機。")) return;
+            removeSyncUrl();
+            document.getElementById('cloud-sync-url-input').value = "";
+            document.getElementById('cloud-sync-clear-link').style.display = "none";
+            updateSyncBadge("尚未設定雲端同步", "");
+        }
+
         function saveAppState() {
+            var payload = null;
             try {
-                var payload = {
+                payload = {
                     days: initialDaysData,
                     shop: defaultShoppingList,
                     expenses: defaultExpenses,
@@ -577,6 +756,7 @@
             } catch (e) {
                 console.warn("自動存檔失敗（可能是隱私瀏覽模式或儲存空間已滿）：", e);
             }
+            if (payload) pushToCloud(payload);
         }
 
         function loadAppState() {
@@ -597,7 +777,8 @@
         }
 
         function resetAppState() {
-            if (confirm("確定要清除目前所有的修改（拖曳排序、編輯內容、購物清單、記帳），還原成最原始的行程內容嗎？此動作無法復原，若有重要修改建議先匯出備份檔。")) {
+            var cloudNote = getSyncUrl() ? "\n\n⚠️ 你已設定雲端同步，清除後重新整理可能會自動把雲端的舊資料拉回來。若要真正清空，請也到「資料備份」設定裡停用雲端同步。" : "";
+            if (confirm("確定要清除目前所有的修改（拖曳排序、編輯內容、購物清單、記帳），還原成最原始的行程內容嗎？此動作無法復原，若有重要修改建議先匯出備份檔。" + cloudNote)) {
                 try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
                 location.reload();
             }
@@ -606,6 +787,15 @@
         function openBackupModal() {
             var statusEl = document.getElementById('backup-status-text');
             if (statusEl) statusEl.textContent = "";
+
+            var savedUrl = getSyncUrl();
+            var urlInput = document.getElementById('cloud-sync-url-input');
+            if (urlInput) urlInput.value = savedUrl;
+            var clearLink = document.getElementById('cloud-sync-clear-link');
+            if (clearLink) clearLink.style.display = savedUrl ? "inline" : "none";
+            var cloudStatusEl = document.getElementById('cloud-sync-status-text');
+            if (cloudStatusEl) cloudStatusEl.textContent = savedUrl ? "目前已設定雲端同步" : "";
+
             document.getElementById('backup-modal').style.display = "flex";
         }
 
@@ -886,6 +1076,37 @@
             loadAppState();
             renderTabs();
             switchTab("day_0");
+
+            // 先用本機資料立即顯示畫面（不卡網路），再背景比對雲端資料是否更新
+            var syncUrl = getSyncUrl();
+            if (syncUrl) {
+                pullFromCloud().then(function (cloudPayload) {
+                    if (!cloudPayload) return;
+
+                    var localRaw = null;
+                    try { localRaw = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null"); } catch (e) {}
+
+                    var cloudTime = cloudPayload.savedAt ? new Date(cloudPayload.savedAt).getTime() : 0;
+                    var localTime = (localRaw && localRaw.savedAt) ? new Date(localRaw.savedAt).getTime() : 0;
+
+                    if (cloudTime >= localTime) {
+                        // 雲端資料較新（或這台沒存過）：用雲端覆蓋畫面
+                        initialDaysData = cloudPayload.days;
+                        defaultShoppingList = cloudPayload.shop || defaultShoppingList;
+                        defaultExpenses = cloudPayload.expenses || defaultExpenses;
+                        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudPayload)); } catch (e) {}
+                        renderTabs();
+                        renderPanel();
+                        var t = new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+                        updateSyncBadge("☁️ 已同步 " + t, "synced");
+                    } else if (localRaw) {
+                        // 這台裝置本機比雲端新（離線時改過的）：補推一次上雲端
+                        pushToCloud(localRaw);
+                    }
+                });
+            } else {
+                updateSyncBadge("尚未設定雲端同步", "");
+            }
         });
 
         function renderTabs() {
